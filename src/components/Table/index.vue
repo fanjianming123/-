@@ -17,8 +17,8 @@
           <el-table-column
             :prop="item.value"
             :label="item.label"
-            v-for="item in NavList"
-            :key="item.taskCode"
+            v-for="(item,index) in NavList"
+            :key="index"
             :min-width="item.label === '创建日期' ? 200 : 120"
           >
           </el-table-column>
@@ -88,7 +88,7 @@ export default {
       handler() {
         this.currentPageRecords.forEach((item) => {
           item.createType = item.createType === 0 ? '自动' : '手动'
-          item.updateTime = item.updateTime.replace('T', ' ')
+          item.updateTime = item.updateTime?.replace('T', ' ')
         })
       }
     }
