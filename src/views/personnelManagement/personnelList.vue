@@ -17,25 +17,32 @@
     </div>
     <!-- 表单内容 -->
     <div class="bottom">
-      <dkd-table
+      <Table
         :NavList="NavList"
         v-bind.sync="currentObj"
         @changePage="changePage"
         :isShow="false"
       >
-        <el-button type="text" size="small"> 修改 </el-button>
-        <el-button style="color: red" type="text" size="small">
-          删除
-        </el-button>
-      </dkd-table>
+        <el-table-column label="操作" min-width="200">
+          <!-- slot-scope="scope" -->
+          <template >
+            <el-button type="text" size="small"> 修改 </el-button>
+            <el-button style="color: red" type="text" size="small">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </Table>
     </div>
   </div>
 </template>
 
 <script>
 import { getUpersonnelApi } from '@/api/personnel'
+import Table from './components/Table'
 export default {
   name: 'personnel',
+  components: { Table },
   data() {
     return {
       NavList: [
