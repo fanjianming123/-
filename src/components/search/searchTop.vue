@@ -21,16 +21,10 @@
               ></el-option>
             </div>
           </el-select>
-          <template>
-            <i
-              v-if="isShow"
-              class="iconfont icon-cuowuguanbiquxiao-xianxingyuankuang"
-            ></i>
-          </template>
         </el-form-item>
         <el-form-item>
           <bb-button type="primary" @click.native="search">
-            <i class="iconfont icon-sousuo"></i>
+            <i class="el-icon-search"></i>
             查询
           </bb-button>
         </el-form-item>
