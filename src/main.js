@@ -16,6 +16,7 @@ import "@/icons"; // icon
 import "@/permission"; // permission control
 import "@/assets/fonts/iconfont.css";
 import * as directives from "@/directives";
+import dkdTable from "./components/Table/dkd-table";
 
 for (let key in directives) {
   Vue.directive(key, directives[key]);
@@ -40,7 +41,7 @@ Vue.use(ElementUI, { locale });
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false;
-
+Vue.use(dkdTable);
 new Vue({
   el: "#app",
   router,
