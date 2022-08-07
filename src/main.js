@@ -19,6 +19,9 @@ import * as directives from '@/directives'
 import dkdTable from './components/Table/dkd-table'
 import dkdButton from './components/dkd-button/dkd-button'
 
+import MyBb from '@/components'
+Vue.use(MyBb)
+
 for (let key in directives) {
   Vue.directive(key, directives[key])
 }
