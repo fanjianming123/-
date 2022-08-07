@@ -1,10 +1,17 @@
 <template>
   <div>
-    <searchTop :searchItem="searchItem"></searchTop>
+    <searchTop :searchItem="searchItem" @searchForm="searchGoods"></searchTop>
+    <el-card class="box-card">
+      <el-button icon="el-icon-circle-plus-outline" class="elBtn">
+        新建
+      </el-button>
+      <goodsTable ref="search"></goodsTable>
+    </el-card>
   </div>
 </template>
 
 <script>
+import goodsTable from './components/goodsTable.vue'
 import searchTop from '@/components/search/searchTop.vue'
 export default {
   data() {
@@ -29,10 +36,23 @@ export default {
 
   created() {},
   components: {
-    searchTop
+    searchTop,
+    goodsTable
   },
-  methods: {}
+  methods: {
+    searchGoods(val) {
+      this.$refs.search.getGoodsList(val.user)
+    }
+  }
 }
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.box-card {
+  .elBtn {
+    background-color: #ff893b;
+    color: #fff;
+    font-size: 14px;
+  }
+}
+</style>

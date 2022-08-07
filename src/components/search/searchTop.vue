@@ -58,7 +58,7 @@ export default {
   created() {},
   methods: {
     search() {
-      console.log(this.formInline)
+      // console.log(this.formInline)
       this.$emit('searchForm', this.formInline)
       this.$refs.formInline.resetFields()
     },
@@ -75,6 +75,9 @@ export default {
   margin: 20px 0;
   background-color: #fff;
   height: 64px;
+  ::v-deep.el-card__body {
+    padding: 12px 20px !important;
+  }
   .search {
     display: flex;
     -webkit-box-align: center;
