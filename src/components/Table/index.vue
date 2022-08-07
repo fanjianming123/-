@@ -3,9 +3,11 @@
     <el-card class="box-card" shadow="never">
       <el-row type="flex" class="btn-col">
         <el-col :span="2" class="btn1"
-          ><dkd-button user="create">新建</dkd-button></el-col
+          ><dkd-button user="create" v-if="isShowNew">新建</dkd-button></el-col
         >
-        <el-col><dkd-button user="cancel">工单配置</dkd-button></el-col>
+        <el-col
+          ><dkd-button user="cancel" v-if="isShow">工单配置</dkd-button></el-col
+        >
       </el-row>
 
       <!-- 表格部分 -->
@@ -17,8 +19,8 @@
           <el-table-column
             :prop="item.value"
             :label="item.label"
-            v-for="item in NavList"
-            :key="item.taskCode"
+            v-for="(item, index) in NavList"
+            :key="index"
             :min-width="item.label === '创建日期' ? 200 : 120"
           >
           </el-table-column>
@@ -41,7 +43,7 @@
         :total="+totalCount"
       >
       </el-pagination>
-   </el-card>
+    </el-card>
   </div>
 </template>
 
@@ -56,7 +58,14 @@ export default {
       type: Array, //表头数组
       required: true
     },
-
+    isShow: { //控制工单按钮显示
+      type: Boolean,
+      default: true
+    },
+    isShowNew: { //控制新建按钮显示
+      type: Boolean,
+      default: true
+    },
     currentPageRecords: {
       type: Array, //表格数据数组
       default: () => []
@@ -88,7 +97,7 @@ export default {
       handler() {
         this.currentPageRecords.forEach((item) => {
           item.createType = item.createType === 0 ? '自动' : '手动'
-          item.updateTime = item.updateTime.replace('T', ' ')
+          item.updateTime = item.updateTime?.replace('T', ' ')
         })
       }
     }
