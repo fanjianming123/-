@@ -88,8 +88,11 @@ export default {
       console.log(val)
     },
     async delFn(val) {
-      await delVmTypeAPI(val.data.typeId)
-      this.getVmSearch(this.baseParams)
+      try {
+        await delVmTypeAPI(val.data.typeId)
+        this.getVmSearch(this.baseParams)
+        this.$message.success('删除成功')
+      } catch (error) {}
     }
   }
 }
