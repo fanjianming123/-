@@ -1,8 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <SearchTop :searchItem="searchItem"> </SearchTop>
-    </el-card>
+    <SearchTop :searchItem="searchItem"> </SearchTop>
   </div>
 </template>
 
@@ -37,11 +35,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.box-card {
-  position: relative;
-  padding: 20px px;
-  background-color: #f8fafd;
-  min-height: 1350px;
-}
-</style>
+<style scoped></style>
