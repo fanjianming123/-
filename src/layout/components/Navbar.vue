@@ -58,6 +58,7 @@ export default {
 .navbar {
   height: 60px;
   overflow: hidden;
+  z-index: 99;
   position: fixed;
   top: 0;
   right: 0;
