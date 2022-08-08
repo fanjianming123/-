@@ -102,7 +102,7 @@ export default {
   methods: {
     async orderSearch(val) {
       const res = await orderSearchApi(val)
-      console.log(res)
+      // console.log(res)
       this.orderData = res.data
     },
     changePageFn() {
@@ -111,7 +111,7 @@ export default {
     },
     seeDetails(row) {
       this.dialogVisible = true
-      console.log(row)
+      // console.log(row)
       this.row = row
     },
     submitFn(val, valueTime) {
@@ -119,7 +119,7 @@ export default {
       this.baseParams.orderNo = val
       this.baseParams.startDate = valueTime[0]
       this.baseParams.endDate = valueTime[1]
-      console.log(this.orderData)
+      // console.log(this.orderData)
       this.orderSearch(this.baseParams)
     }
   },

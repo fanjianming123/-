@@ -3,7 +3,9 @@
     <el-card class="box-card" shadow="never">
       <el-row type="flex" class="btn-col">
         <el-col :span="2" class="btn1"
-          ><dkd-button user="create">新建</dkd-button></el-col
+          ><dkd-button user="create" v-if="isShowNew" @click="$emit('add')"
+            >新建</dkd-button
+          ></el-col
         >
         <el-col
           ><dkd-button user="cancel" v-if="isShow">工单配置</dkd-button></el-col
@@ -24,11 +26,11 @@
             :min-width="item.label === '创建日期' ? 200 : 120"
           >
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
-            <template>
-              <slot></slot>
-            </template>
-          </el-table-column>
+          <!-- <el-table-column label="操作" min-width="200"> -->
+          <!-- <template> -->
+          <slot></slot>
+          <!-- </template> -->
+          <!-- </el-table-column> -->
         </el-table>
       </div>
       <!-- 分页部分 -->
@@ -58,7 +60,14 @@ export default {
       type: Array, //表头数组
       required: true
     },
-
+    isShowNew: {
+      type: Boolean, //新建按钮
+      default: true
+    },
+    isShow: {
+      type: Boolean, //工单配置按钮
+      default: true
+    },
     currentPageRecords: {
       type: Array, //表格数据数组
       default: () => []
