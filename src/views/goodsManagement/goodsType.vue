@@ -22,7 +22,7 @@
 
 <script>
 import goodsTable from './components/goodsTable.vue'
-import searchTop from '@/components/search/searchTop.vue'
+import searchTop from './components/searchTop.vue'
 import addGoods from './components/addGoods.vue'
 export default {
   data() {
