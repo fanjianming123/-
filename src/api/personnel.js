@@ -46,7 +46,7 @@ export const WorkOrderStatisticsApi = (params) => {
  * 获取当时工单汇总信息(人员统计头部信息)
  * @returns  promise
  */
-export const gettaskReportInfoApi = (start,end) => {
+export const gettaskReportInfoApi = (start, end) => {
   return request({
     url: '/api/task-service/task/taskReportInfo' + start + end
   })
