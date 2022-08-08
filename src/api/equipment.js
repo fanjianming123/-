@@ -130,3 +130,52 @@ export const getskuCollectAPI = (innerCode, start, end, paramas) =>
       end,
     paramas
   })
+
+/**
+ *
+ * @param {Object} data
+ * vmRow	number	非必须
+ * vmCol	number	非必须
+ * name	string	非必须
+ * channelMaxCapacity	number	非必须
+ * model	string	非必须
+ * image	string	非必须
+ * @returns promise
+ */
+export const addVmType = (data) =>
+  request({
+    method: 'post',
+    url: '/api/vm-service/vmType',
+    data
+  })
+
+/**
+ *售货机类型修改
+ * @param {String} id 类型Id
+ * @param {Object} data
+ * vmRow	number	非必须
+ * vmCol	number	非必须
+ * name	string	非必须
+ * channelMaxCapacity	number	非必须
+ * model	string	非必须
+ * image	string	非必须
+ * @returns promise
+ */
+export const editVmType = (id, data) =>
+  request({
+    method: 'PUT',
+    url: '/api/vm-service/vmType/' + id,
+    data
+  })
+
+/**
+ * 图片上传
+ * @param {Object} data 图片文件
+ * @returns promise
+ */
+export const UploadImageAPI = (data) =>
+  request({
+    method: 'post',
+    url: '/api/vm-service/sku/fileUpload',
+    data
+  })
