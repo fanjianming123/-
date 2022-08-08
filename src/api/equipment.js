@@ -179,3 +179,62 @@ export const UploadImageAPI = (data) =>
     url: '/api/vm-service/sku/fileUpload',
     data
   })
+
+/**
+ * 获取所有型号列表
+ * @returns promise
+ */
+export const getVmTypeListAPI = () =>
+  request({
+    method: 'GET',
+    url: '/api/vm-service/vmType/search?pageIndex=1&pageSize=100000'
+  })
+
+/**
+ * 获取所有点位列表
+ * @returns promise
+ */
+export const getnodeListAPI = () =>
+  request({
+    method: 'GET',
+    url: '/api/vm-service/node/search?pageIndex=1&pageSize=100000'
+  })
+
+/**
+ *新增售货机
+ * @param {Object} data
+ * vmType	integer			售货机类型Id
+ * nodeId	string			所属点位Id
+ * createUserId	integer			创建人Id
+ * @returns promise
+ */
+export const addVmAPI = (data) =>
+  request({
+    method: 'POST',
+    url: '/api/vm-service/vm',
+    data
+  })
+
+/**
+ *策略列表
+ * @returns promise
+ */
+export const getpolicyList = () =>
+  request({
+    url: '/api/vm-service/policy'
+  })
+
+/**
+ *应用策略
+ * @param {Object} params
+ * innerCodeList	string []		售货机编号列表
+ * item 类型: string
+ * policyId	integer			策略Id
+ * @returns promise
+ */
+export const applyPolicyAPI = (data) =>
+  request({
+    url: '/api/vm-service/vm/applyPolicy',
+    method: 'PUT',
+    data
+  })

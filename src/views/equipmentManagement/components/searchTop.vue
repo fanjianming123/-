@@ -9,6 +9,11 @@
       >
         <el-form-item :label="firstItem">
           <el-input v-model="formInline.user" placeholder="请输入"></el-input>
+          <i
+            class="el-icon-circle-close"
+            v-if="formInline.user"
+            @click="formInline.user = ''"
+          ></i>
         </el-form-item>
         <el-form-item :label="secondItem" v-if="isSelect">
           <el-select v-model="formInline.region" placeholder="请选择">
@@ -21,6 +26,11 @@
               ></el-option>
             </div>
           </el-select>
+          <i
+            class="el-icon-circle-close"
+            v-if="formInline.user"
+            @click="formInline.user = ''"
+          ></i>
         </el-form-item>
         <el-form-item>
           <dkd-button user="query" @click="search">查询</dkd-button>
@@ -94,6 +104,11 @@ export default {
       height: 36px;
       line-height: 36px;
       width: 205px;
+    }
+    i {
+      position: absolute;
+      left: 188px;
+      top: 14px;
     }
     .iconfont {
       font-size: 18px;

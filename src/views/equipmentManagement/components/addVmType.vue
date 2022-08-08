@@ -151,7 +151,7 @@ export default {
       this.$emit('changeisEdit')
     },
     async addVmType() {
-      this.$refs.form.validate()
+      await this.$refs.form.validate()
       if (!this.isEdit) {
         await addVmType(this.form)
       } else {
