@@ -1,15 +1,6 @@
 <template>
   <div class="table">
     <el-card class="box-card" shadow="never">
-      <el-row type="flex" class="btn-col">
-        <el-col :span="2" class="btn1"
-          ><dkd-button user="create">新建</dkd-button></el-col
-        >
-        <el-col
-          ><dkd-button user="cancel" v-if="isShow">工单配置</dkd-button></el-col
-        >
-      </el-row>
-
       <!-- 表格部分 -->
       <div class="table-container">
         <el-table :data="currentPageRecords" style="width: 100%">
@@ -19,21 +10,19 @@
           <el-table-column
             :prop="item.value"
             :label="item.label"
-            v-for="(item, index) in NavList"
-            :key="index"
+            v-for="item in NavList"
+            :key="item.taskCode"
             :min-width="item.label === '创建日期' ? 200 : 120"
           >
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
-            <template>
-              <slot></slot>
-            </template>
-          </el-table-column>
+          <slot>
+
+          </slot>
         </el-table>
       </div>
       <!-- 分页部分 -->
       <el-pagination
-        :hide-on-single-page="true"
+        :hide-on-single-page="false"
         class="el-pagination-container"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -90,7 +79,17 @@ export default {
       handler() {
         this.currentPageRecords.forEach((item) => {
           item.createType = item.createType === 0 ? '自动' : '手动'
-          item.updateTime = item.updateTime?.replace('T', ' ')
+          item.createTime = item.createTime.replace('T', ' ')
+          item.updateTime = item.updateTime.replace('T', ' ')
+          if (item.status === 0) {
+            item.status = '创建'
+          } else if (item.status === 1) {
+            item.status = '支付'
+          } else if (item.status === 2) {
+            item.status = '出货成功'
+          } else {
+            item.vmType = '出货失败'
+          }
         })
       }
     }
@@ -111,22 +110,12 @@ export default {
       // console.log(`当前页: ${val}`)
       this.$emit('update:pageIndex', val)
       this.$emit('changePage')
-    },
-    handleClick(row) {
-      console.log(row)
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.btn-col {
-  justify-content: start;
-  margin: 20px;
-  .btn1 {
-    margin-right: 10px;
-  }
-}
 .table-container {
   margin: 0 20px 20px;
 }

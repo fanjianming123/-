@@ -3,39 +3,46 @@
     <!-- 头部搜索 -->
     <div class="top">
       <span>人员搜索:</span>
-      <inputBox></inputBox>
+      <el-input
+        v-model.trim="valueName"
+        placeholder="请输入"
+        style="width: 200px"
+        clearable
+        @clear="clearValue"
+      ></el-input>
       <i class="ibutt"></i>
-      <searchBtn></searchBtn>
+      <el-button type="primary" icon="el-icon-search" @click="queryPresonnel"
+        >查询</el-button
+      >
     </div>
     <!-- 表单内容 -->
     <div class="bottom">
-      <dkd-table
+      <Table
         :NavList="NavList"
         v-bind.sync="currentObj"
         @changePage="changePage"
+        :isShow="false"
       >
-        <el-button
-          type="text"
-          size="small">
-          修改
-        </el-button>
-        <el-button
-        style='color:red'
-          type="text"
-          size="small">
-          删除
-        </el-button>
-      </dkd-table>
+        <el-table-column label="操作" min-width="200">
+          <!-- slot-scope="scope" -->
+          <template >
+            <el-button type="text" size="small"> 修改 </el-button>
+            <el-button style="color: red" type="text" size="small">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </Table>
     </div>
   </div>
 </template>
 
 <script>
-import inputBox from '@/components/search/input.vue'
-import searchBtn from '@/components/search/searchBtn.vue'
 import { getUpersonnelApi } from '@/api/personnel'
+import Table from './components/Table'
 export default {
   name: 'personnel',
+  components: { Table },
   data() {
     return {
       NavList: [
@@ -48,30 +55,43 @@ export default {
       baseparams: {
         pageIndex: 1,
         pageSize: 10
-      }
+      },
+      valueName: ''
     }
   },
   beforeUpdate() {
     this.currentObj.pageSize = +this.currentObj.pageSize
     this.currentObj.pageIndex = +this.currentObj.pageIndex
   },
-  components: { inputBox, searchBtn },
   created() {
     this.getUpersonnel(this.baseparams)
   },
 
   methods: {
+    //获取人员信息列表（搜索）
     async getUpersonnel(val) {
       const res = await getUpersonnelApi(val)
       this.currentObj = res.data
-      console.log(res)
+      // console.log(res)
     },
+    //分页change事件
     async changePage() {
       const params = {
         pageIndex: this.currentObj.pageIndex,
         pageSize: this.currentObj.pageSize
       }
       await this.getUpersonnel(params)
+    },
+    //查询事件
+    queryPresonnel() {
+      const userName = {
+        userName: this.valueName
+      }
+      this.getUpersonnel(userName)
+    },
+    clearValue() {
+      //点击清除小图标发送
+      this.getUpersonnel(this.baseparams)
     }
   }
 }
@@ -91,7 +111,7 @@ export default {
       margin-right: 10px;
       margin-left: 10px;
     }
-    .ibutt{
+    .ibutt {
       margin: 0 5px;
     }
   }
