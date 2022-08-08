@@ -58,8 +58,8 @@
               align="center"
               type="daterange"
               value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :start-placeholder="baseTiem"
+              :end-placeholder="baseTiem"
               prefix-icon="el-icon-date"
               @change="getdata"
             >
@@ -148,12 +148,16 @@ export default {
       value: '',
       start: '2022-08-08',
       end: '2022-08-08', // 默认时间
-      timeout: [new Date(2022, 10, 11, 10, 10), new Date(2022, 10, 11, 10, 10)], //时间
+      timeout: '', //时间
       dimension: {}, //运维人员
       camp: {} // 运营人员
     }
   },
-
+  computed: {
+    baseTiem() {
+      return dayjs(new Date()).format('YYYY-MM-DD')
+    }
+  },
   created() {
     this.gettaskReportInfo()
     this.statusTatistics(this.start, this.end)
