@@ -32,14 +32,14 @@
 <script>
 import { addGoodsType, editGoodsType, getGoodsList } from '@/api/goods'
 export default {
+  name: 'ADDGOODS',
   props: {
     visible: {
       type: Boolean,
       required: true
     },
     editGoodsTypeVal: {
-      type: Object,
-      required: true
+      type: Object
     }
   },
   data() {
@@ -54,7 +54,9 @@ export default {
     }
     return {
       formData: {
-        text: ''
+        text: '',
+        classId: 0,
+        parentId: 0
       },
       goodsRoules: {
         text: [
@@ -74,25 +76,38 @@ export default {
     // 关闭弹窗
     onClose() {
       this.$emit('update:visible', false)
+      this.$refs.form.resetFields()
+      this.formData = {
+        text: '',
+        classId: 0,
+        parentId: 0
+      }
     },
     // 确定事件
     async onSave() {
       await this.$refs.form.validate()
       try {
-        await addGoodsType({
-          className: this.formData.text
-        })
-        this.$message.success('添加成功')
-        this.formData.text = ''
-        this.onClose()
-        this.$emit('addGoods')
+        if (this.formData.text) {
+          const res = await editGoodsType({
+            classId: this.editGoodsTypeVal.classId,
+            className: this.formData.text
+          })
+          console.log(res)
+          this.$message.success('修改成功')
+          this.onClose()
+          this.$emit('addGoods')
+        } else {
+          await addGoodsType({
+            className: this.formData.text
+          })
+          this.$message.success('添加成功')
+          this.formData.text = ''
+          this.onClose()
+          this.$emit('addGoods')
+        }
       } catch (error) {
         this.$message.error('操作失败')
       }
-    },
-    async editGoodsType() {
-      console.log(this.editGoodsTypeVal)
-      await editGoodsType()
     }
   }
 }

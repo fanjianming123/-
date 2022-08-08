@@ -37,8 +37,9 @@ export const delGoodsType = (classId) =>
  * @param {Number} classId 需要修改的商量类型id
  * @returns promise
  */
-export const editGoodsType = (classId) =>
+export const editGoodsType = (data) =>
   request({
-    url: '/api/vm-service/skuClass/' + classId,
-    method: 'PUT'
+    url: '/api/vm-service/skuClass/' + data.classId,
+    method: 'PUT',
+    data
   })

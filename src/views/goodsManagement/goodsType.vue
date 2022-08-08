@@ -16,13 +16,14 @@
       :visible.sync="dialogVisible"
       @addGoods="addGoodsFn"
       :editGoodsTypeVal="editGoodsTypeVal"
+      ref="goods"
     ></addGoods>
   </div>
 </template>
 
 <script>
 import goodsTable from './components/goodsTable.vue'
-import searchTop from '@/components/search/searchTop.vue'
+import searchTop from './components/searchTop.vue'
 import addGoods from './components/addGoods.vue'
 export default {
   data() {
@@ -67,8 +68,11 @@ export default {
       this.$refs.search.getGoodsList()
     },
     editGoodsType(val) {
-      this.dialogVisible = true
+      // console.log(val)
       this.editGoodsTypeVal = val
+      this.$refs.goods.formData.text = val.className
+      this.dialogVisible = true
+      // console.log(this.editGoodsTypeVal)
     }
   }
 }
