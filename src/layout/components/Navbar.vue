@@ -62,7 +62,7 @@ export default {
   top: 0;
   right: 0;
   width: calc(100% - 167px);
-  z-index: 9999;
+  z-index: 99;
   // background: #fff;
   background-image: url("./img/navbar.png");
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);

@@ -26,11 +26,11 @@
             :min-width="item.label === '创建日期' ? 200 : 120"
           >
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
-          <template>
+          <!-- <el-table-column label="操作" min-width="200"> -->
+          <!-- <template> -->
           <slot></slot>
-          </template>
-          </el-table-column>
+          <!-- </template> -->
+          <!-- </el-table-column> -->
         </el-table>
       </div>
       <!-- 分页部分 -->
