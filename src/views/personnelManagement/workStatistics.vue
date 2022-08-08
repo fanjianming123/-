@@ -52,21 +52,29 @@
           <el-col class="title-cols" :span="14">工单状态</el-col>
           <el-col :span="4">
             <el-date-picker
-              v-model="value1"
+              v-model="timeout"
               class="time-out"
-              type="datetimerange"
+              size="small"
+              align="center"
+              type="daterange"
+              value-format="yyyy-MM-dd"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              :default-time="['12:00:00']"
               prefix-icon="el-icon-date"
             >
             </el-date-picker>
           </el-col>
           <el-col :span="2" class="time-madthoryear">
             <ul>
-              <li>周</li>
-              <li>月</li>
-              <li>年</li>
+              <li
+                v-for="(item, index) in times"
+                :key="index"
+                class="day-focss"
+                :class="actives === index ? 'day-css' : ''"
+                @click="addClass(index)"
+              >
+                {{ item.day }}
+              </li>
             </ul>
           </el-col>
         </el-row>
@@ -100,8 +108,14 @@
           </el-col>
         </el-row>
         <el-row type="flex" class="middle">
-          <el-col>运营人员</el-col>
-          <el-col>运维人员</el-col>
+          <el-col
+            v-for="(item, index) in poylees"
+            :key="index"
+            class="personnel-info"
+            :class="active === index ? 'activepersonnel' : ''"
+            @click.native="addPersClass(index)"
+            >{{ item.day }}</el-col
+          >
         </el-row>
         <el-row class="empty-img">
           <el-col>
@@ -114,15 +128,25 @@
 </template>
 
 <script>
-import { gettaskReportInfoApi, AreaListApi } from '@/api/personnel'
-import dayjs from 'dayjs'
+import dayjs from "dayjs"
+import {
+  gettaskReportInfoApi,
+  AreaListApi,
+  statusTatisticsApi
+} from '@/api/personnel'
 export default {
   name: 'workStatistics',
   data() {
     return {
-      options: [],
+      actives: 0, // 周 月年 动态类名
+      active: 0, //运维 运营切换
+      times: [{ day: '周' }, { day: '月' }, { day: '年' }],
+      poylees: [{ day: '运营人员' }, { day: '运维人员' }],
+      options: [], //街道列表
       value: '',
-      value1: '',
+      start: '2022-08-08',
+      end: '2022-08-08', // 默认时间
+      timeout: '', //时间
       dimension: {}, //运维人员
       camp: {} // 运营人员
     }
@@ -130,6 +154,7 @@ export default {
 
   created() {
     this.gettaskReportInfo()
+    this.statusTatistics(this.start, this.end)
   },
 
   methods: {
@@ -152,6 +177,22 @@ export default {
       const res = await AreaListApi(page)
       console.log(res)
       this.options = res.data.currentPageRecords
+    },
+    //工单状态
+    async statusTatistics(start, end) {
+      // const start = this.timeout[0]
+      // const end = this.timeout[1]
+      console.log(111)
+      const res = await statusTatisticsApi(start, end)
+      console.log(res)
+    },
+    //动态切换周月年
+    addClass(val) {
+      this.actives = val
+    },
+    // 动态切换运营运维
+    addPersClass(index) {
+      this.active = index
     }
   }
 }
@@ -216,11 +257,8 @@ export default {
       font-weight: 700;
     }
     .time-out {
-      width: 230px;
-      height: 32px;
-      // margin-right: 21px;
-      margin-left: 18px;
-      padding: 3px 10px;
+      width: 250px;
+      margin-left: 5px;
     }
     .time-madthoryear {
       ul {
@@ -234,6 +272,22 @@ export default {
         margin-left: 100px;
         margin-top: -2px;
         background-color: #f7fbff;
+        cursor: pointer;
+      }
+      .day-focss {
+        width: 40px;
+        height: 25px;
+        font-size: 14px;
+        text-align: center;
+        line-height: 25px;
+      }
+      .day-css {
+        background: #fff;
+        box-shadow: 0 0 4px 0 rgb(0 0 0 / 11%);
+        border-radius: 7px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
       }
     }
     .empty-img {
@@ -268,10 +322,21 @@ export default {
       background-color: #f7fbff;
       width: 174px;
       height: 34px;
-      .el-col {
+      padding: 3px 20px 0;
+      .personnel-info {
+        width: 78px;
+        height: 18px;
         font-size: 14px;
-        color: #333333;
-        background-color: #fff;
+        color: #9ca3b4;
+        cursor: pointer;
+      }
+      .activepersonnel {
+        background: #fff;
+        -webkit-box-shadow: 0 0 4px 0 rgb(0 0 0 / 11%);
+        box-shadow: 0 0 4px 0 rgb(0 0 0 / 11%);
+        border-radius: 7px;
+        font-weight: 600;
+        color: #333;
       }
     }
     .empty-img {

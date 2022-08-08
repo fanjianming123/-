@@ -51,6 +51,17 @@ export const gettaskReportInfoApi = (start, end) => {
     url: `/api/task-service/task/taskReportInfo/${start}/${end}`
   })
 }
+/**
+ * 人效页面 工单状态统计
+ * @param {string} start  开始时间
+ * @param {string} end  结束时间
+ * @returns  promise
+ */
+export const statusTatisticsApi = (start, end) => {
+  return request({
+    url: `/api/task-service/task/collectReport/${start}/${end}`
+  })
+}
 
 /**
  *  获取人效统计页面/人员新增 区域列表
@@ -112,7 +123,7 @@ export const DelePersonnelApi = (id) => {
  * @param {string} id  用户id
  * @returns  promise
  */
-export const addPersonnelApi = (id,data) => {
+export const addPersonnelApi = (id, data) => {
   return request({
     url: '/api/user-service/user/' + id,
     method: 'PUT',
