@@ -23,7 +23,10 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <dkd-button user="query" @click="search">查询</dkd-button>
+          <bb-button type="primary" @click.native="search">
+            <i class="iconfont icon-sousuo"></i>
+            查询
+          </bb-button>
         </el-form-item>
       </el-form>
     </div>
@@ -55,8 +58,7 @@ export default {
   created() {},
   methods: {
     search() {
-      if (this.formInline.user == '') return
-      // console.log(this.formInline)
+      console.log(this.formInline)
       this.$emit('searchForm', this.formInline)
       this.$refs.formInline.resetFields()
     },
