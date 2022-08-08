@@ -31,6 +31,7 @@
 <script>
 import { getGoodsList, delGoodsType } from '@/api/goods'
 export default {
+  name: 'GoodsTable',
   data() {
     return {
       goodsListTitle: {
@@ -38,15 +39,18 @@ export default {
         goodsTypeName: '商品类型名称',
         operation: '操作'
       },
-      tableData: []
+      tableData: [],
+      pageIndex: 1
     }
   },
   methods: {
     // 获取商品类型
     async getGoodsList(val) {
       const res = await getGoodsList({
-        className: val
+        className: val,
+        pageIndex: this.pageIndex
       })
+      this.$emit('paging', res.data)
       this.tableData = res.data.currentPageRecords
     },
     // 删除商品类型
@@ -61,6 +65,12 @@ export default {
         this.$message.success('删除成功')
         this.getGoodsList()
       } catch (error) {}
+    },
+    pageIndexjiajia() {
+      this.pageIndex++
+    },
+    pageIndexjianjian() {
+      this.pageIndex--
     }
   },
   created() {

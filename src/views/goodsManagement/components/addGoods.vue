@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="新增商品类型"
+    :title="isShowTitle"
     :visible="visible"
     width="30%"
     @close="onClose"
@@ -87,12 +87,11 @@ export default {
     async onSave() {
       await this.$refs.form.validate()
       try {
-        if (this.formData.text) {
-          const res = await editGoodsType({
+        if (this.formData.classId) {
+          await editGoodsType({
             classId: this.editGoodsTypeVal.classId,
             className: this.formData.text
           })
-          console.log(res)
           this.$message.success('修改成功')
           this.onClose()
           this.$emit('addGoods')
@@ -101,13 +100,17 @@ export default {
             className: this.formData.text
           })
           this.$message.success('添加成功')
-          this.formData.text = ''
           this.onClose()
           this.$emit('addGoods')
         }
       } catch (error) {
         this.$message.error('操作失败')
       }
+    }
+  },
+  computed: {
+    isShowTitle() {
+      return this.formData.classId ? '修改商品类型' : '新增商品类型'
     }
   }
 }

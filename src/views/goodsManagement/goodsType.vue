@@ -9,7 +9,32 @@
       >
         新建
       </el-button>
-      <goodsTable ref="search" @editGoodsType="editGoodsType"></goodsTable>
+      <goodsTable
+        ref="search"
+        @editGoodsType="editGoodsType"
+        @paging="pagingFn"
+      ></goodsTable>
+      <!-- 分页 -->
+      <div class="paging">
+        <div>
+          共<span>{{ paging.totalCount }}</span
+          >条记录 第<span>{{ paging.pageIndex }}</span
+          >/<span>{{ paging.totalPage }}</span
+          >页
+        </div>
+        <div class="pagingBtn">
+          <el-button
+            @click="PreviousPage"
+            :disabled="paging.pageIndex <= 1 ? true : false"
+            >上一页</el-button
+          >
+          <el-button
+            :disabled="paging.pageIndex === paging.totalPage ? true : false"
+            @click="nextPage"
+            >下一页</el-button
+          >
+        </div>
+      </div>
     </el-card>
     <!-- 新增弹窗 -->
     <addGoods
@@ -44,11 +69,17 @@ export default {
         }
       },
       dialogVisible: false,
-      editGoodsTypeVal: {}
+      editGoodsTypeVal: {}, //修改传值数据
+      paging: {} //分页数据
     }
   },
 
   created() {},
+  // updated() {
+  //   if (this.paging.totalPage > 1) {
+  //     this.disablednex = false
+  //   }
+  // },
   components: {
     searchTop,
     goodsTable,
@@ -71,8 +102,23 @@ export default {
       // console.log(val)
       this.editGoodsTypeVal = val
       this.$refs.goods.formData.text = val.className
+      this.$refs.goods.formData.classId = val.classId
       this.dialogVisible = true
-      // console.log(this.editGoodsTypeVal)
+    },
+    //分页
+    pagingFn(val) {
+      this.paging = val
+    },
+
+    // 上一页
+    PreviousPage() {
+      this.$refs.search.pageIndexjianjian()
+      this.$refs.search.getGoodsList()
+    },
+    //下一页
+    nextPage() {
+      this.$refs.search.pageIndexjiajia()
+      this.$refs.search.getGoodsList()
     }
   }
 }
@@ -84,6 +130,19 @@ export default {
     background-color: #ff893b;
     color: #fff;
     font-size: 14px;
+  }
+  //  分页
+  .paging {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px 0 50px 50px;
+    color: #dbdfe5;
+    font-size: 16px;
+    .pagingBtn {
+      display: flex;
+      margin-right: 60px;
+    }
   }
 }
 </style>
