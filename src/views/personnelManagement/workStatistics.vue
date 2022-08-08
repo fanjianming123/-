@@ -61,6 +61,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               prefix-icon="el-icon-date"
+              @change="getdata"
             >
             </el-date-picker>
           </el-col>
@@ -100,7 +101,7 @@
                   v-for="item in options"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.name"
+                  :value="item.id"
                 >
                 </el-option>
               </el-select>
@@ -128,11 +129,12 @@
 </template>
 
 <script>
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 import {
   gettaskReportInfoApi,
   AreaListApi,
-  statusTatisticsApi
+  statusTatisticsApi,
+  PersonnelRankingApi
 } from '@/api/personnel'
 export default {
   name: 'workStatistics',
@@ -146,7 +148,7 @@ export default {
       value: '',
       start: '2022-08-08',
       end: '2022-08-08', // 默认时间
-      timeout: '', //时间
+      timeout: [new Date(2022, 10, 11, 10, 10), new Date(2022, 10, 11, 10, 10)], //时间
       dimension: {}, //运维人员
       camp: {} // 运营人员
     }
@@ -175,24 +177,67 @@ export default {
         pageSize: 1000
       }
       const res = await AreaListApi(page)
-      console.log(res)
       this.options = res.data.currentPageRecords
+      this.options.forEach((item) => item.name)
+      this.options.unshift({ name: '全部', id: 0 })
+      // console.log(this.options);
     },
     //工单状态
     async statusTatistics(start, end) {
-      // const start = this.timeout[0]
-      // const end = this.timeout[1]
-      console.log(111)
       const res = await statusTatisticsApi(start, end)
-      console.log(res)
+      // console.log(res)
     },
     //动态切换周月年
-    addClass(val) {
+    async addClass(val) {
       this.actives = val
+      if (val === 0) {
+        //周
+        const start = dayjs(new Date()).startOf('week').format('YYYY-MM-DD')
+        const end = dayjs().endOf('day').format('YYYY-MM-DD')
+        const res = await statusTatisticsApi(start, end)
+        console.log(res)
+      } else if (val === 1) {
+        // 月
+        const start = dayjs(new Date()).startOf('month').format('YYYY-MM-DD')
+        const end = dayjs(new Date()).format('YYYY-MM-DD')
+        const res = await statusTatisticsApi(start, end)
+        console.log(res)
+      } else {
+        //年
+        const start = dayjs(new Date()).startOf('year').format('YYYY-MM-DD')
+        const end = dayjs().startOf('date').format('YYYY-MM-DD')
+        const res = await statusTatisticsApi(start, end)
+        console.log(res)
+      }
     },
     // 动态切换运营运维
-    addPersClass(index) {
+    async addPersClass(index) {
       this.active = index
+      if (index === 0) {
+        // 运营工单
+        const start = dayjs().startOf('month').format('YYYY-MM-DD')
+        const end = dayjs().endOf('date').format('YYYY-MM-DD')
+        const isRepair = false
+        const regionId = this.value === '' ? 0 : this.value
+        const res = await PersonnelRankingApi(start, end, isRepair, regionId)
+        console.log(res)
+      } else {
+        //运维工单
+        const start = dayjs().startOf('month').format('YYYY-MM-DD')
+        const end = dayjs().endOf('date').format('YYYY-MM-DD')
+        const isRepair = true
+        const regionId = this.value === '' ? 0 : this.value
+        const arr = await PersonnelRankingApi(start, end, isRepair, regionId)
+        console.log(arr)
+      }
+    },
+    //确定选择的时间发送接口
+    async getdata() {
+      // console.log(this.timeout);
+      const start = this.timeout[0]
+      const end = this.timeout[1]
+      const res = await statusTatisticsApi(start, end)
+      console.log(res)
     }
   }
 }
