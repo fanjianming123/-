@@ -21,16 +21,10 @@
               ></el-option>
             </div>
           </el-select>
-          <template>
-            <i
-              v-if="isShow"
-              class="iconfont icon-cuowuguanbiquxiao-xianxingyuankuang"
-            ></i>
-          </template>
         </el-form-item>
         <el-form-item>
           <bb-button type="primary" @click.native="search">
-            <i class="iconfont icon-sousuo"></i>
+            <i class="el-icon-search"></i>
             查询
           </bb-button>
         </el-form-item>
@@ -64,13 +58,14 @@ export default {
   created() {},
   methods: {
     search() {
-      console.log(this.formInline)
+      // console.log(this.formInline)
       this.$emit('searchForm', this.formInline)
       this.$refs.formInline.resetFields()
     },
     onSubmit() {
       console.log('submit!')
-    }
+    },
+
   }
 }
 </script>
@@ -81,6 +76,9 @@ export default {
   margin: 20px 0;
   background-color: #fff;
   height: 64px;
+  ::v-deep.el-card__body {
+    padding: 12px 20px !important;
+  }
   .search {
     display: flex;
     -webkit-box-align: center;

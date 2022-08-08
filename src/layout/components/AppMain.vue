@@ -23,7 +23,7 @@ export default {
   margin-top: 60px;
   background-color: #f8fafd;
   min-height: calc(100vh - 60px);
-  padding: 20px;
+  padding:0 20px;
   width: 100%;
   position: relative;
   overflow: hidden;

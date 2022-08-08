@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import SearchTop from '@/components/search/searchTop.vue'
+import SearchTop from '@/views/equipmentManagement/components/searchTop.vue'
 export default {
   data() {
     return {
