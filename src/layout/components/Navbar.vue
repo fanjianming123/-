@@ -16,42 +16,42 @@
 </template>
 
 <script>
-import { mapGetters, createNamespacedHelpers } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import defaultImg from "@/assets/user.jpg";
-const { mapState: mapUserState } = createNamespacedHelpers("user");
+import { mapGetters, createNamespacedHelpers } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
+import defaultImg from '@/assets/user.jpg'
+const { mapState: mapUserState } = createNamespacedHelpers('user')
 export default {
   data() {
     return {
-      defaultImg,
-    };
+      defaultImg
+    }
   },
   components: {
     Breadcrumb,
-    Hamburger,
+    Hamburger
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar"]),
-    ...mapUserState(["userInfo"]),
+    ...mapGetters(['sidebar', 'avatar']),
+    ...mapUserState(['userInfo']),
     image() {
       if (!this.userInfo.image) {
-        return this.userInfo.image + 123;
+        return this.userInfo.image + 123
       }
-      return this.userInfo.image;
-    },
+      return this.userInfo.image
+    }
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
+      this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch("user/logout");
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
-    },
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
   },
-  created() {},
-};
+  created() {}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -62,9 +62,9 @@ export default {
   top: 0;
   right: 0;
   width: calc(100% - 167px);
-  z-index: 9999;
+  z-index: 99;
   // background: #fff;
-  background-image: url("./img/navbar.png");
+  background-image: url('./img/navbar.png');
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
