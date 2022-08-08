@@ -33,7 +33,8 @@
           >
         </el-row>
         <h5>商品销量（月）</h5>
-        <el-row>
+        <p v-if="skuCollectList.length == 0">当前设备未销售商品</p>
+        <el-row v-else>
           <el-col :span="6" v-for="(item, index) in skuCollectList" :key="index"
             ><div class="grid-content">
               {{ item.skuName }}:{{ item.count }}

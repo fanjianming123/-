@@ -3,7 +3,9 @@
     <el-card class="box-card">
       <el-row type="flex" class="btn-col" v-if="isTwoBtn">
         <el-col :span="2" class="btn1"
-          ><dkd-button user="create">新建</dkd-button></el-col
+          ><dkd-button user="create" @click="$emit('showAddDialog', true)"
+            >新建</dkd-button
+          ></el-col
         >
         <el-col
           ><dkd-button user="cancel" v-if="!isOneBtn"
@@ -64,8 +66,8 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" min-width="200">
-            <template slot-scope="scope"> 
-              <slot :data='scope.row'></slot>
+            <template slot-scope="scope">
+              <slot :data="scope.row"></slot>
             </template>
           </el-table-column>
         </el-table>

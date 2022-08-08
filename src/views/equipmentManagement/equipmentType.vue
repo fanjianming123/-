@@ -6,6 +6,7 @@
       :NavList="NavList"
       v-bind.sync="searchResults"
       @changePage="changePageFn"
+      @showAddDialog='showAddDialogFn'
     >
       <template v-slot:default="data">
         <el-button size="mini" type="text" @click="editFn(data)"
