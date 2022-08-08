@@ -43,11 +43,79 @@ export const WorkOrderStatisticsApi = (params) => {
   })
 }
 /**
- * 获取当时工单汇总信息(人员统计头部信息)
+ * 获取当时工单汇总信息(人员统计头部信息) 人效统计页面
  * @returns  promise
  */
 export const gettaskReportInfoApi = (start, end) => {
   return request({
-    url: '/api/task-service/task/taskReportInfo' + start + end
+    url: `/api/task-service/task/taskReportInfo/${start}/${end}`
+  })
+}
+
+/**
+ *  获取人效统计页面/人员新增 区域列表
+ * @returns  promise
+ */
+export const AreaListApi = (params) => {
+  return request({
+    url: '/api/vm-service/region/search',
+    params
+  })
+}
+/**
+ * 获取角色列表
+ * @param {Object} params 请求参数
+ * @returns  promise
+ */
+export const RoleListApi = () => {
+  return request({
+    url: '/api/user-service/role'
+  })
+}
+/**
+ *上传图片
+ * @param {file} data 图片地址
+ * @returns  promise
+ */
+export const PictureUploadApi = (data) => {
+  return request({
+    url: '/api/vm-service/sku/fileUpload',
+    method: 'POST',
+    data
+  })
+}
+/**
+ * 新增人员
+ * @param {object} data 新增人员信息
+ * @returns  promise
+ */
+export const NewPersonnelApi = (data) => {
+  return request({
+    url: '/api/user-service/user',
+    method: 'POST',
+    data
+  })
+}
+/**
+ * 删除人员
+ * @param {string} id 用户ID
+ * @returns  promise
+ */
+export const DelePersonnelApi = (id) => {
+  return request({
+    url: '/api/user-service/user/' + id,
+    method: 'DELETE'
+  })
+}
+/**
+ * 修改人员
+ * @param {string} id  用户id
+ * @returns  promise
+ */
+export const addPersonnelApi = (id,data) => {
+  return request({
+    url: '/api/user-service/user/' + id,
+    method: 'PUT',
+    data
   })
 }

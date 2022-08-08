@@ -6,19 +6,19 @@
         运营人员（当天）
         <el-row type="flex" align="center">
           <el-col
-            ><span>5</span>
+            ><span>{{ camp.total }}</span>
             <div>工单总数(个)</div></el-col
           >
           <el-col>
-            <span>0</span>
+            <span>{{ camp.completedTotal }}</span>
             <div>完成工单(个)</div></el-col
           >
           <el-col
-            ><span>3</span>
+            ><span>{{ camp.cancelTotal }}</span>
             <div>拒绝工单(个)</div></el-col
           >
           <el-col
-            ><span>18</span>
+            ><span>{{ camp.workerCount }}</span>
             <div>运营人员数(个)</div></el-col
           >
         </el-row>
@@ -27,19 +27,19 @@
         运维人员（当天）
         <el-row type="flex" align="center">
           <el-col
-            ><span>5</span>
+            ><span>{{ dimension.total }}</span>
             <div>工单总数(个)</div></el-col
           >
           <el-col>
-            <span>0</span>
+            <span>{{ dimension.completedTotal }}</span>
             <div>完成工单(个)</div></el-col
           >
           <el-col
-            ><span>3</span>
+            ><span>{{ dimension.cancelTotal }}</span>
             <div>拒绝工单(个)</div></el-col
           >
           <el-col
-            ><span>18</span>
+            ><span>{{ dimension.workerCount }}</span>
             <div>运营人员数(个)</div></el-col
           >
         </el-row>
@@ -47,10 +47,10 @@
     </el-row>
     <!-- 主体内容区域 -->
     <el-row type="flex">
-      <el-col class="left-message" span="18">
+      <el-col class="left-message" :span="18">
         <el-row type="flex">
-          <el-col class="title-cols" span="14">工单状态</el-col>
-          <el-col span="4">
+          <el-col class="title-cols" :span="14">工单状态</el-col>
+          <el-col :span="4">
             <el-date-picker
               v-model="value1"
               class="time-out"
@@ -62,7 +62,7 @@
             >
             </el-date-picker>
           </el-col>
-          <el-col span="2" class="time-madthoryear">
+          <el-col :span="2" class="time-madthoryear">
             <ul>
               <li>周</li>
               <li>月</li>
@@ -72,26 +72,27 @@
         </el-row>
         <el-row class="empty-img">
           <el-col>
-            <el-empty description="暂无数据"></el-empty>
+            <!-- <el-empty description="暂无数据"></el-empty> -->
           </el-col>
         </el-row>
       </el-col>
 
-      <el-col span="6" class="right-message">
+      <el-col :span="6" class="right-message">
         <el-row type="flex">
-          <el-col class="title-cols" span="16">人效排名（月度）</el-col>
-          <el-col span="3">
+          <el-col class="title-cols" :span="16">人效排名（月度）</el-col>
+          <el-col :span="3">
             <template>
               <el-select
                 v-model="value"
                 placeholder="全部"
                 class="input-select"
+                @visible-change="visibleChange"
               >
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 >
                 </el-option>
               </el-select>
@@ -104,7 +105,7 @@
         </el-row>
         <el-row class="empty-img">
           <el-col>
-            <el-empty description="暂无数据"></el-empty>
+            <!-- <el-empty description="暂无数据"></el-empty> -->
           </el-col>
         </el-row>
       </el-col>
@@ -113,21 +114,17 @@
 </template>
 
 <script>
-import { gettaskReportInfoApi } from '@/api/personnel'
+import { gettaskReportInfoApi, AreaListApi } from '@/api/personnel'
+import dayjs from 'dayjs'
 export default {
+  name: 'workStatistics',
   data() {
     return {
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        }
-      ],
-      value: ''
+      options: [],
+      value: '',
+      value1: '',
+      dimension: {}, //运维人员
+      camp: {} // 运营人员
     }
   },
 
@@ -136,13 +133,25 @@ export default {
   },
 
   methods: {
+    //头部可视区域接口
     async gettaskReportInfo() {
-      // const time = {
-      //   start: 20200101,
-      //   end: 20200821
-      // }
-      const res = await gettaskReportInfoApi(time)
+      const start = dayjs().startOf('date').format('YYYY-MM-DD 00:00:00')
+      const end = dayjs().endOf('date').format('YYYY-MM-DD 23:59:59')
+
+      const res = await gettaskReportInfoApi(start, end)
+      // console.log(res)
+      this.camp = res.data[0]
+      this.dimension = res.data[1]
+    },
+    //下拉区域列表
+    async visibleChange() {
+      const page = {
+        pageIndex: 1,
+        pageSize: 1000
+      }
+      const res = await AreaListApi(page)
       console.log(res)
+      this.options = res.data.currentPageRecords
     }
   }
 }

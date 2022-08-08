@@ -49,14 +49,7 @@
       :details="details"
       :Workorderform="Workorderform"
     >
-      <!-- <el-table-column>
-        <template>
-          <div v-for="item in Objs" :key="item">{{ item }}</div>
-        </template>
-      </el-table-column> -->
       <el-table-column prop="week" label=""> </el-table-column>
-      <!-- <el-table-column prop="total" > </el-table-column> -->
-      <!-- <el-table-column prop="total" > </el-table-column> -->
     </Viewdetails>
   </div>
 </template>
