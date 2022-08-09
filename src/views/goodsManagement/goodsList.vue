@@ -56,7 +56,7 @@
 
 <script>
 import ExcelUpload from './components/ExcelUpload.vue'
-import searchTop from './components/searchTop.vue'
+import searchTop from './components/searchTopa.vue'
 import goodsListTable from './components/goodsListTable.vue'
 import addGoodsList from './components/addGoodsList.vue'
 export default {
