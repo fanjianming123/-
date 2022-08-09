@@ -51,9 +51,16 @@
 import SearchTop from './components/searchTop.vue'
 import bkdTable from './components/bkdTable.vue'
 import ShowDetail from './partnerComponent/showDetailDialog.vue'
-import { getPartnerSearchApi,addPartnerListApi } from '@/api/partner'
+import {
+  getPartnerSearchApi,
+  addPartnerListApi,
+  editPartnerListApi,
+  resetPartnerMessageApi,
+  delPartnerApi
+} from '@/api/partner'
 import addDialog from './partnerComponent/addDialog.vue'
 export default {
+  name: 'partner',
   data() {
     return {
       searchItem: {
@@ -105,8 +112,13 @@ export default {
   },
   methods: {
     async getNodeSearch(val) {
+      console.log(val)
       const { data } = await getPartnerSearchApi(val)
-      console.log(data)
+      // console.log(data)
+      // const res = data.currentPageRecords.forEach((item) => {
+      //   return (item.radio = toString(item.radio) + '%')
+      // })
+      // console.log(res)
       this.AreaList = data
     },
     searchFormFn(val) {
@@ -125,11 +137,8 @@ export default {
     async addFn(val) {
       // console.log(val)
       if (val) {
-        this.editAreaList = val
-        await this.$refs.addDialog.showEditContent({
-          name: val.name,
-          regionId: val.regionId
-        })
+        // this.editAreaList = val
+        this.$refs.addDialog.form = val
       }
       this.dialogFormVisible = true
 
@@ -138,16 +147,12 @@ export default {
     async addPoint(val) {
       console.log(val)
       try {
-      //   await addPartnerListApi({
-      //     name,
-      //     account,
-      //     password,
-      //     ratio,
-      //     contact,
-      //     phone,
-      //     mobile
-        // })
+        await addPartnerListApi(val)
         this.$message.success('添加成功')
+        this.getNodeSearch({
+          pageIndex: 1,
+          pageSize: 10
+        })
       } catch (error) {
         this.$message.error('添加失败')
         this.$message.error(error.response.data)
@@ -155,19 +160,9 @@ export default {
       // console.log(res)
     },
     async editFn(val) {
-      console.log(val)
+      // console.log(val)
       try {
-        await editNodeDetailApi({
-          id: val.id,
-          name: val.name,
-          addr: val.addr[0] + '-' + val.addrDetail,
-          areaCode: val.addr[1],
-          createUserId: this.$store.state.user.userId,
-          regionId: val.regionName,
-          businessId: val.businessTypeName,
-          ownerId: val.ownerName.id,
-          ownerName: val.ownerName.name
-        })
+        await editPartnerListApi(val)
         this.$message.success('编辑成功')
       } catch (error) {
         this.$message.error('编辑失败')
@@ -175,13 +170,19 @@ export default {
       }
     },
     async handleClick(row) {
-      await this.$refs.showDetail.showDetailContent(row)
+      this.$refs.showDetail.tableData = row
       this.Visible = true
     },
     async deleteRow(row) {
       try {
-        await delNodeDetailApi(row.id)
-        this.getNodeSearch()
+        await delPartnerApi({
+          name: row.name,
+          id: row.id
+        })
+        this.getNodeSearch({
+          pageIndex: 1,
+          pageSize: 10
+        })
       } catch (error) {
         // console.dir(error)
         this.$message.error(error.response.data)
@@ -195,9 +196,47 @@ export default {
     },
     replaceCode(val) {
       console.log(val)
+      this.$confirm('确定要重置合作商密码吗?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          try {
+            await resetPartnerMessageApi(val.id)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          } catch (error) {
+            this.$message.error(error.response.data)
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+::v-deep .el-message-box {
+  width: auto;
+  min-width: 281px !important;
+  padding: 0 18px 42px 17px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ebeef5;
+  font-size: 18px;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  text-align: left;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+</style>

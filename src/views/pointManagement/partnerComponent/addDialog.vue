@@ -60,7 +60,12 @@
         >
         </el-input-number>
       </el-form-item>
-      <el-form-item label="账号:" :label-width="formLabelWidth" prop="account">
+      <el-form-item
+        label="账号:"
+        :label-width="formLabelWidth"
+        prop="account"
+        v-if="!this.form.id"
+      >
         <el-input
           v-model.trim="form.account"
           autocomplete="off"
@@ -69,7 +74,12 @@
           show-word-limit
         ></el-input>
       </el-form-item>
-      <el-form-item label="密码:" :label-width="formLabelWidth" prop="password">
+      <el-form-item
+        label="密码:"
+        :label-width="formLabelWidth"
+        prop="password"
+        v-if="!this.form.id"
+      >
         <el-input
           v-model.trim="form.password"
           autocomplete="off"
@@ -147,41 +157,41 @@ export default {
     async onClose() {
       this.$emit('update:visible', false)
       // this.$refs.ruleForm.resetFields()
-      // this.form = {
-      //   name: '',
-      //   account: '',
-      //   ratio: '',
-      //   contact: '',
-      //   moblie: '',
-      //   password: '',
-      //   id: ''
-      // }
+      this.form = {
+        name: '',
+        account: '',
+        ratio: '',
+        contact: '',
+        moblie: '',
+        password: '',
+        id: ''
+      }
     },
     async confirm() {
       // await this.$refs.ruleForm.validate()
-      // if (this.form.id) {
+      if (this.form.id) {
       // console.log(this.form.addr)
-      // await this.$emit('edit', this.form)
-      // } else {
+      await this.$emit('edit', this.form)
+      } else {
       // console.log(CodeToText[this.form.addr]);
       console.log(this.form)
       await this.$emit('add', this.form)
       // await this.$refs.ruleForm.resetFields()
-      // }
+      }
       this.onClose()
       // console.log(res)
       // this.$emit('update:visible', false)
     },
     handleChange(value) {
       // console.log(value)
-      let newAddr = ''
-      for (let i = 0; i < value.length; i++) {
-        newAddr += CodeToText[value[i]] + '-'
-      }
-      this.form.addr = [
-        newAddr.substr(0, newAddr.length - 1),
-        value[value.length - 1]
-      ]
+      // let newAddr = ''
+      // for (let i = 0; i < value.length; i++) {
+      //   newAddr += CodeToText[value[i]] + '-'
+      // }
+      // this.form.addr = [
+      //   newAddr.substr(0, newAddr.length - 1),
+      //   value[value.length - 1]
+      // ]
     },
     async showEditContent(id) {
       const { data } = await getNodeSearchApi(id)
