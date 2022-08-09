@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row type="flex" justify="center" :gutter="20">
-      <el-col :span="12">
+      <el-col>
         <div>
           <div class="grid-content bg-purple1">
             <div class="title">日销售统计</div>
@@ -32,7 +32,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="12">
+      <el-col>
         <div class="grid-content bg-purple2">
           <span class="title">月销售统计</span>
           <div class="body">
@@ -49,7 +49,7 @@
                 <div class="num color3 text-shadow2">
                   {{ orderAmountMonthList }}
                 </div>
-                <div class="text color4">当月销售额（元）</div>
+                <div class="text color4">当月销售额（万元）</div>
               </div>
             </div>
             <div class="status">
@@ -138,7 +138,7 @@ export default {
     async orderAmountMonth() {
       const res = await orderAmountApi(this.nowmonth)
       // console.log(res)
-      this.orderAmountMonthList = res.data
+      this.orderAmountMonthList = (res.data/1000000).toFixed(2)
     },
     // 订单总数
     async orderCount() {
@@ -183,8 +183,9 @@ export default {
 .grid-content {
   // position: relative;
   border-radius: 20px;
-  width: 840px;
-  height: 214px;
+  width: 647px;
+  height: 167px;
+  margin-top: 20px;
 }
 .row-bg {
   padding: 10px 0;

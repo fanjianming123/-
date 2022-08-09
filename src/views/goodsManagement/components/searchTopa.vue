@@ -8,7 +8,7 @@
         ref="formInline"
       >
         <el-form-item :label="firstItem">
-          <el-input v-model="formInline.user" placeholder="请输入"> </el-input>
+          <el-input v-model="formInline.user" placeholder="请输入"></el-input>
           <i
             class="el-icon-circle-close"
             v-if="formInline.user"
@@ -17,17 +17,19 @@
         </el-form-item>
         <el-form-item :label="secondItem" v-if="isSelect">
           <el-select v-model="formInline.region" placeholder="请选择">
-            <el-option
-              v-for="item in selectOption"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
+            <div>
+              <el-option
+                v-for="item in selectOption"
+                :key="item.label"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </div>
           </el-select>
           <i
             class="el-icon-circle-close"
-            v-if="formInline.region"
-            @click="formInline.region = ''"
+            v-if="formInline.user"
+            @click="formInline.user = ''"
           ></i>
         </el-form-item>
         <el-form-item>
@@ -43,23 +45,27 @@
 
 <script>
 export default {
-  name: 'searchTop',
   data() {
     return {
       firstItem: this.searchItem.firstItem,
       secondItem: this.searchItem.secondItem || '',
       isSelect: this.searchItem.isSelect,
-      selectOption: [],
+      selectOption: this.searchItem.selectOption,
       formInline: this.searchItem.formInline
     }
   },
-  computed: {},
+  computed: {
+    isShow() {
+      this.selectOption.some((item) => this.formInline.region === item.value)
+    }
+  },
   props: {
     searchItem: {
       type: Object,
       required: true
     }
   },
+  created() {},
   methods: {
     search() {
       // console.log(this.formInline)
@@ -68,8 +74,7 @@ export default {
     },
     onSubmit() {
       console.log('submit!')
-    },
-    handleSelectChange() {}
+    }
   }
 }
 </script>
