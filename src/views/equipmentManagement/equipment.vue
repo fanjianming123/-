@@ -180,6 +180,10 @@
       :vmChanneldialogVisible.sync="vmChanneldialogVisible"
       :channelList="channelList"
       :currentVm="currentVm"
+      @sureAdvice="sureAdviceFn"
+      @delGood="delGoodFn"
+      @sureAdd="sureAddFn"
+      @sureChangeChannel="sureChangeChannelFn"
     ></vmChannel>
   </div>
 </template>
@@ -192,6 +196,7 @@ import {
   applyPolicyAPI,
   cancelvmPolicyAPI,
   changeNodeAPI,
+  channelConfigAPI,
   getchannelListAPI,
   getnodeListAPI,
   getpolicyList,
@@ -404,6 +409,40 @@ export default {
       this.currentVm = val
       console.log(this.channelList)
       this.vmChanneldialogVisible = true
+    },
+    //采纳建议
+    sureAdviceFn(val) {
+      val.forEach((item, index) => {
+        this.channelList[index].sku.skuImage = item.image
+        this.channelList[index].sku.skuName = item.skuName
+      })
+    },
+    //删除商品
+    delGoodFn(val) {
+      console.log(val)
+      this.channelList.filter(
+        (item) => item.channelCode == val.channelCode
+      )[0].sku.skuImage = ''
+      this.channelList.filter(
+        (item) => item.channelCode == val.channelCode
+      )[0].sku.skuName = ''
+    },
+    sureAddFn(val) {
+      console.log(val)
+      this.channelList.filter(
+        (item) => item.channelCode == val.channelCode
+      )[0].sku.skuImage = val.skuImage
+      this.channelList.filter(
+        (item) => item.channelCode == val.channelCode
+      )[0].sku.skuName = val.skuName
+    },
+    async sureChangeChannelFn() {
+      const data = {
+        innerCode: this.currentVm.innerCode,
+        channelList: this.channelList
+      }
+      await channelConfigAPI(data)
+      this.getVmSearch(this.baseParams)
     }
   }
 }

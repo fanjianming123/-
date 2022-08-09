@@ -283,28 +283,40 @@ export const getchannelListAPI = (innerCode) =>
     url: '/api/vm-service/channel/channelList/' + innerCode
   })
 
-
-  /**
-   * 获取商圈下销量前10的商品(补货推荐)
-   * @param {String} businessId 商圈id
-   * @returns promise
-   */
+/**
+ * 获取商圈下销量前10的商品(补货推荐)
+ * @param {String} businessId 商圈id
+ * @returns promise
+ */
 export const getbusinessTopAPI = (businessId) =>
   request({
     url: '/api/vm-service/sku/businessTop10/' + businessId
   })
 
-  /**
-   * 商品搜索
-   * @param {Object} query 
-   * @returns promise
-   */
-  export const getskusearchAPI = (pageIndex,skuName) =>
+/**
+ * 商品搜索
+ * @param {Object} query
+ * @returns promise
+ */
+export const getskusearchAPI = (pageIndex, skuName) =>
   request({
     url: '/api/vm-service/sku/search',
-    params:{
-      pageIndex:pageIndex,
-      pageSize:10,
+    params: {
+      pageIndex: pageIndex,
+      pageSize: 10,
       skuName
     }
+  })
+
+
+/**
+ * 货道配置
+ * @param {Object} data innerCode  channelList
+ * @returns promise
+ */
+export const channelConfigAPI = (data) =>
+  request({
+    url: '/api/vm-service/channel/channelConfig',
+    method: 'PUT',
+    data
   })
