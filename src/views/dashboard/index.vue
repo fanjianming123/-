@@ -74,7 +74,7 @@
         :key="index"
       >
         <span class="user-img"
-          ><i class="index-text">{{ index }}</i>
+          ><i class="index-text">{{ index+1 }}</i>
           <img src="./components/jin.png" alt="" v-if="index === 0" />
           <img src="./components/yin.png" alt="" v-else-if="index === 1" />
           <img src="./components/tong.png" alt="" v-else-if="index === 2" />
