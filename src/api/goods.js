@@ -78,3 +78,15 @@ export const editGoods = (data) =>
     method: 'PUT',
     data
   })
+
+/**
+ * 商品数据导入
+ * @param {String} data fileName 	文件名
+ * @returns promise
+ */
+export const uploadGoods = (data) =>
+  request({
+    url: '/api/vm-service/sku/upload',
+    method: 'POST',
+    data
+  })

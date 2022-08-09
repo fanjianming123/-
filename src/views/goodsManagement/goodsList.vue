@@ -9,7 +9,15 @@
       >
         新建
       </el-button>
-      <el-button class="importBtn"> 导入数据 </el-button>
+      <!-- 数据导入 -->
+      <el-button class="importBtn" @click="dialogVisible1 = true">
+        导入数据
+      </el-button>
+
+      <el-dialog title="数据导入" :visible="dialogVisible1" width="30%">
+        <ExcelUpload @CancelBtn="CancelBtn"></ExcelUpload>
+      </el-dialog>
+      <!-- 数据导入 -->
       <goodsListTable
         ref="goodsSearch"
         @paging="pagingFn"
@@ -47,10 +55,12 @@
 </template>
 
 <script>
+import ExcelUpload from './components/ExcelUpload.vue'
 import searchTop from './components/searchTop.vue'
 import goodsListTable from './components/goodsListTable.vue'
 import addGoodsList from './components/addGoodsList.vue'
 export default {
+  name: 'GoodsList',
   data() {
     return {
       searchItem: {
@@ -69,7 +79,8 @@ export default {
         }
       },
       paging: {}, //分页数据
-      dialogVisible: false //弹窗
+      dialogVisible: false, //弹窗
+      dialogVisible1: false //导入数据弹窗
     }
   },
 
@@ -99,19 +110,26 @@ export default {
       this.dialogVisible = true
       this.$refs.addgoods.getGoodsList()
     },
+    // 添加调用
     addGoods() {
       this.$refs.goodsSearch.getGoodsSearch()
     },
+    //修改传值
     editGoodsFn(val) {
       // console.log(val)
       this.dialogVisible = true
       this.$refs.addgoods.formData = val
+    },
+    //导入数据弹窗关闭
+    CancelBtn() {
+      this.dialogVisible1 = false
     }
   },
   components: {
     searchTop,
     goodsListTable,
-    addGoodsList
+    addGoodsList,
+    ExcelUpload
   }
 }
 </script>
