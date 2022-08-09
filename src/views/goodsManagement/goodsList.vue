@@ -10,7 +10,11 @@
         新建
       </el-button>
       <el-button class="importBtn"> 导入数据 </el-button>
-      <goodsListTable ref="goodsSearch" @paging="pagingFn"></goodsListTable>
+      <goodsListTable
+        ref="goodsSearch"
+        @paging="pagingFn"
+        @editGoods="editGoodsFn"
+      ></goodsListTable>
       <!-- 分页 -->
       <div class="paging">
         <div>
@@ -97,6 +101,11 @@ export default {
     },
     addGoods() {
       this.$refs.goodsSearch.getGoodsSearch()
+    },
+    editGoodsFn(val) {
+      // console.log(val)
+      this.dialogVisible = true
+      this.$refs.addgoods.formData = val
     }
   },
   components: {

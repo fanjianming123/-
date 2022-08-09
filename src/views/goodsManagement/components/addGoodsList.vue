@@ -1,5 +1,10 @@
 <template>
-  <el-dialog title="新增商品" :visible="visible" width="30%" @close="onClose">
+  <el-dialog
+    :title="isShowTitle"
+    :visible="visible"
+    width="30%"
+    @close="onClose"
+  >
     <el-form
       ref="form"
       :rules="goodsRoules"
@@ -34,12 +39,12 @@
           @change="handleChange"
         ></el-input-number>
       </el-form-item>
-      <el-form-item label="商品类型" prop="className1">
-        <el-select v-model="formData.className1" placeholder="请选商品类型">
+      <el-form-item label="商品类型" prop="classId">
+        <el-select v-model="formData.classId" placeholder="请选商品类型">
           <el-option
             :label="item.className"
-            :value="item.className"
-            v-for="item in formData.className"
+            :value="item.classId"
+            v-for="item in formData.className1"
             :key="item.classId"
           ></el-option>
         </el-select>
@@ -54,7 +59,7 @@
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="商品图片:" :prop="imageUrl">
+      <el-form-item label="商品图片:" prop="imageUrl">
         <el-upload
           class="avatar-uploader"
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -62,7 +67,11 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <img
+            v-if="formData.skuImage"
+            :src="formData.skuImage"
+            class="avatar"
+          />
           <i v-else class="el-icon-upload avatar-uploader-icon"></i>
         </el-upload>
         <span class="prompt">支持扩展名：jpg、png，文件不得大于100kb</span>
@@ -76,7 +85,7 @@
 </template>
 
 <script>
-import { getGoodsList, addGoods } from '@/api/goods'
+import { getGoodsList, addGoods, editGoods } from '@/api/goods'
 export default {
   name: 'ADDGOODSs',
   props: {
@@ -96,8 +105,9 @@ export default {
         skuName: '',
         unit: '',
         price: '',
-        className: [],
-        className1: ''
+        className1: [],
+        classId: '',
+        skuId: ''
       },
       goodsRoules: {
         brandName: [
@@ -114,8 +124,7 @@ export default {
         className1: [
           { required: true, message: '请输入商品类型', trigger: 'blur' }
         ]
-      },
-      imageUrl: ''
+      }
     }
   },
 
@@ -126,14 +135,14 @@ export default {
     async getGoodsList() {
       const res = await getGoodsList()
       // console.log(res.data.currentPageRecords)
-      this.formData.className = res.data.currentPageRecords
+      this.formData.className1 = res.data.currentPageRecords
     },
     handleChange(value) {
       console.log(value)
     },
     //上传图片
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.formData.skuImage = URL.createObjectURL(file.raw)
     },
     //上传图片
     beforeAvatarUpload(file) {
@@ -152,39 +161,41 @@ export default {
     // 关闭弹窗
     onClose() {
       this.$emit('update:visible', false)
-      // this.$refs.form.resetFields()
-      // this.formData = {
-      //   text: '',
-      //   classId: 0,
-      //   parentId: 0
-      // }
+      this.$refs.form.resetFields()
+      this.formData = {
+        brandName: '',
+        skuImage: '',
+        skuName: '',
+        unit: '',
+        price: '',
+        classId: ''
+      }
     },
     // 确定事件
     async onSave() {
       await this.$refs.form.validate()
       try {
-        await addGoods({
-          skuName: this.formData.skuName,
-          skuImage: this.imageUrl,
-          price: this.formData.price,
-          classId: this.formData.className.length + 1,
-          unit: this.formData.unit,
-          brandName: this.formData.brandName
-        })
-        console.log(res)
-        this.$message.success('添加成功')
-        this.onClose()
-        this.$emit('addGoods')
+        if (this.formData.skuId) {
+          await editGoods(this.formData)
+          this.$message.success('修改成功')
+          this.onClose()
+          this.$emit('addGoods')
+        } else {
+          await addGoods(this.formData)
+          this.$message.success('添加成功')
+          this.onClose()
+          this.$emit('addGoods')
+        }
       } catch (error) {
         this.$message.error(error)
       }
     }
+  },
+  computed: {
+    isShowTitle() {
+      return this.formData.skuId ? '修改商品' : '新增商品'
+    }
   }
-  // computed: {
-  //   isShowTitle() {
-  //     return this.formData.classId ? '修改商品类型' : '新增商品类型'
-  //   }
-  // }
 }
 </script>
 

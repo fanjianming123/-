@@ -40,7 +40,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="$emit('editGoodsType', scope.row)"
+          @click="$emit('editGoods', scope.row)"
           >修改</el-button
         >
       </template>

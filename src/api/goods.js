@@ -66,3 +66,15 @@ export const addGoods = (data) =>
     method: 'POST',
     data
   })
+
+/**
+ * 修改商品
+ * @param {Object} data
+ * @returns promise
+ */
+export const editGoods = (data) =>
+  request({
+    url: '/api/vm-service/sku/' + data.skuId,
+    method: 'PUT',
+    data
+  })
