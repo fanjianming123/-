@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       searchItem: {
-        firstItem: '商品类型搜索',
+        firstItem: '商品类型搜索: ',
         secondItem: '工单状态',
         isSelect: false,
         selectOption: [

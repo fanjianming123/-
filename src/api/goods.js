@@ -43,3 +43,26 @@ export const editGoodsType = (data) =>
     method: 'PUT',
     data
   })
+
+// 以下都是商品管理接口
+/**
+ * 商品搜索
+ * @returns promise
+ */
+export const getGoodsSearch = (params) =>
+  request({
+    url: '/api/vm-service/sku/search',
+    params
+  })
+
+/**
+ *新增商品
+ * @param {Object} data
+ * @returns promise
+ */
+export const addGoods = (data) =>
+  request({
+    url: '/api/vm-service/sku',
+    method: 'POST',
+    data
+  })
