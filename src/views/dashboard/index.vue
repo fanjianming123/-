@@ -461,6 +461,7 @@ export default {
 .dashboard-container {
   position: relative;
   padding: 30px;
+  padding-left: 10px;
   // 工单统计 销售额统计css样式
   .title-Statistics {
     .left-Statistics {
