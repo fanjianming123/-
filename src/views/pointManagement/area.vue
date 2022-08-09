@@ -7,6 +7,7 @@
       v-bind.sync="AreaList"
       :baseParams="baseParams"
       @add="addFn"
+      @changePage="changePageFn"
     >
       <el-table-column label="操作" min-width="200">
         <template slot-scope="scope">
@@ -20,7 +21,7 @@
             type="text"
             size="small"
             style="color: red"
-            @click.native.prevent="deleteRow(scope.$index, tableData)"
+            @click.native="deleteRow(scope.row)"
             >删除</el-button
           >
         </template>
@@ -44,17 +45,24 @@
       :visible.sync="dialogFormVisible"
       :AreaList="AreaList"
       @add="addArea"
+      @edit="editArea"
       :editAreaList="editAreaList"
     ></dialogPoint>
+    <ShowDialogPoint :Visible.sync="Visible" ref="showDetail"></ShowDialogPoint>
   </div>
 </template>
 
 <script>
 import bkdTable from './components/bkdTable.vue'
 import SearchTop from './components/searchTop.vue'
-import { getAreaListApi } from '@/api/point'
-import dialogPoint from '@/components/dialogPoint'
-import { addAreaListApi } from '@/api/point'
+import {
+  getAreaListApi,
+  editAreaDetailApi,
+  addAreaListApi,
+  DelAreaDetaillApi
+} from '@/api/point'
+import dialogPoint from './components/dialogPoint.vue'
+import ShowDialogPoint from './components/showDialogPoint.vue'
 export default {
   data() {
     return {
@@ -80,32 +88,40 @@ export default {
       },
       AreaList: {},
       dialogFormVisible: false,
+      Visible: false,
       editAreaList: {}
     }
   },
   components: {
     SearchTop,
     bkdTable,
-    dialogPoint
+    dialogPoint,
+    ShowDialogPoint
   },
   created() {
     this.getAreaList()
     // this.getVmSearch(this.baseParams)
   },
-
   methods: {
     async getAreaList(val) {
       const res = await getAreaListApi(val)
-      console.log(res)
+      // console.log(res)
       this.AreaList = res.data
       this.AreaList.pageSize = +this.AreaList.pageSize
       this.AreaList.pageIndex = +this.AreaList.pageIndex
     },
-    handleClick(row) {
-      console.log(row)
+    async handleClick(row) {
+      await this.$refs.showDetail.showDetailContent(row)
+      this.Visible = true
     },
-    deleteRow(index, rows) {
-      rows.splice(index, 1)
+    async deleteRow(row) {
+      try {
+        await DelAreaDetaillApi(row.id)
+        this.getAreaList()
+      } catch (error) {
+        // console.dir(error)
+        this.$message.error(error.response.data)
+      }
     },
     searchFormFn(val) {
       this.getAreaList({
@@ -115,8 +131,10 @@ export default {
     },
     async addFn(val) {
       // console.log(val)
-      this.editAreaList = val ? val : {}
-      await this.$refs.showEdit.showEditContent(val.id)
+      if (val) {
+        this.editAreaList = val
+        await this.$refs.showEdit.showEditContent(val.id)
+      }
       this.dialogFormVisible = true
       // console.log(this.editAreaList)
     },
@@ -133,6 +151,27 @@ export default {
         console.dir(error)
         this.$message.error('添加失败')
       }
+    },
+    async editArea(val) {
+      console.log(val)
+      try {
+        await editAreaDetailApi({
+          id: val.id,
+          regionName: val.name,
+          remark: val.remark
+        })
+        this.$message.success('添加成功')
+        this.getAreaList()
+      } catch (error) {
+        console.dir(error)
+        this.$message.error('添加失败')
+      }
+    },
+    changePageFn() {
+      this.getAreaList({
+        pageIndex: this.AreaList.pageIndex,
+        pageSize: this.AreaList.pageSize
+      })
     }
   }
 }

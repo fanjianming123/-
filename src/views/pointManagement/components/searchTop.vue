@@ -8,19 +8,27 @@
         ref="formInline"
       >
         <el-form-item :label="firstItem">
-          <el-input v-model="formInline.user" placeholder="请输入"></el-input>
+          <el-input v-model="formInline.user" placeholder="请输入"> </el-input>
+          <i
+            class="el-icon-circle-close"
+            v-if="formInline.user"
+            @click="formInline.user = ''"
+          ></i>
         </el-form-item>
         <el-form-item :label="secondItem" v-if="isSelect">
           <el-select v-model="formInline.region" placeholder="请选择">
-            <div>
-              <el-option
-                v-for="item in selectOption"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </div>
+            <el-option
+              v-for="item in selectOption"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
+          <i
+            class="el-icon-circle-close"
+            v-if="formInline.region"
+            @click="formInline.region = ''"
+          ></i>
         </el-form-item>
         <el-form-item>
           <bb-button type="primary" @click.native="search">
@@ -35,27 +43,23 @@
 
 <script>
 export default {
+  name: 'searchTop',
   data() {
     return {
       firstItem: this.searchItem.firstItem,
       secondItem: this.searchItem.secondItem || '',
       isSelect: this.searchItem.isSelect,
-      selectOption: this.searchItem.selectOption,
+      selectOption: [],
       formInline: this.searchItem.formInline
     }
   },
-  computed: {
-    isShow() {
-      this.selectOption.some((item) => this.formInline.region === item.value)
-    }
-  },
+  computed: {},
   props: {
     searchItem: {
       type: Object,
       required: true
     }
   },
-  created() {},
   methods: {
     search() {
       // console.log(this.formInline)
@@ -65,7 +69,7 @@ export default {
     onSubmit() {
       console.log('submit!')
     },
-
+    handleSelectChange() {}
   }
 }
 </script>
@@ -97,6 +101,11 @@ export default {
       height: 36px;
       line-height: 36px;
       width: 205px;
+    }
+    i {
+      position: absolute;
+      left: 188px;
+      top: 14px;
     }
     .iconfont {
       font-size: 18px;
