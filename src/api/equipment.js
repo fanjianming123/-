@@ -238,3 +238,73 @@ export const applyPolicyAPI = (data) =>
     method: 'PUT',
     data
   })
+
+/**
+ * 修改售货机点位
+ * @param {String} id 售货机Id
+ * @param {String} nodeId 点位Id
+ * @returns promise
+ */
+export const changeNodeAPI = (id, nodeId) =>
+  request({
+    url: '/api/vm-service/vm/' + id + '/' + nodeId,
+    method: 'PUT'
+  })
+
+/**
+ * 查询售货机策略
+ * @param {String} innerCode 售货机编号
+ * @returns promise
+ */
+export const getvmPolicyAPI = (innerCode) =>
+  request({
+    url: '/api/vm-service/policy/vmPolicy/' + innerCode
+  })
+
+/**
+ * 取消策略
+ * @param {String} innerCode  售货机编号
+ * @param {String} policyId   策略id
+ * @returns promise
+ */
+export const cancelvmPolicyAPI = (innerCode, policyId) =>
+  request({
+    url: '/api/vm-service/vm/cancelPolicy/' + innerCode + '/' + policyId,
+    method: 'PUT'
+  })
+
+/**
+ * 获取售货机货道详情
+ * @param {String} innerCode 售货机编号
+ * @returns promise
+ */
+export const getchannelListAPI = (innerCode) =>
+  request({
+    url: '/api/vm-service/channel/channelList/' + innerCode
+  })
+
+
+  /**
+   * 获取商圈下销量前10的商品(补货推荐)
+   * @param {String} businessId 商圈id
+   * @returns promise
+   */
+export const getbusinessTopAPI = (businessId) =>
+  request({
+    url: '/api/vm-service/sku/businessTop10/' + businessId
+  })
+
+  /**
+   * 商品搜索
+   * @param {Object} query 
+   * @returns promise
+   */
+  export const getskusearchAPI = (pageIndex,skuName) =>
+  request({
+    url: '/api/vm-service/sku/search',
+    params:{
+      pageIndex:pageIndex,
+      pageSize:10,
+      skuName
+    }
+  })

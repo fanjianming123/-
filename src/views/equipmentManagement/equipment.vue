@@ -84,25 +84,40 @@
       width="50%"
       @close="onClosebulkDialog"
     >
-      <span>选择策略：</span>
-      <el-select v-model="policyId" placeholder="请选择" style="width: 80%">
-        <el-option
-          v-for="item in policyList"
-          :key="item.policyId"
-          :label="item.policyName"
-          :value="item.policyId"
-        >
-        </el-option>
-      </el-select>
-
-      <span slot="footer" class="dialog-footer">
-        <dkd-button @click="onClosebulkDialog" user="cancel" class="cancelBtn"
-          >取 消</dkd-button
-        >
-        <dkd-button type="primary" user="sure" @click="bulkHandle"
-          >确 认</dkd-button
-        >
-      </span>
+      <template v-if="!vmPolicy.id">
+        <span>选择策略：</span>
+        <el-select v-model="policyId" placeholder="请选择" style="width: 80%">
+          <el-option
+            v-for="item in policyList"
+            :key="item.policyId"
+            :label="item.policyName"
+            :value="item.policyId"
+          >
+          </el-option>
+        </el-select>
+        <span slot="footer" class="dialog-footer">
+          <dkd-button @click="onClosebulkDialog" user="cancel" class="cancelBtn"
+            >取 消</dkd-button
+          >
+          <dkd-button type="primary" user="sure" @click="bulkHandle"
+            >确 认</dkd-button
+          >
+        </span>
+      </template>
+      <template v-else>
+        <el-row type="flex">
+          <el-col>机器编号：{{ vmPolicy.innerCode }}</el-col>
+          <el-col>策略名称：{{ vmPolicy.policyName }}</el-col>
+        </el-row>
+        <el-row style="margin-top: 20px">
+          <el-col>策略方案：{{ vmPolicy.discount + '%' }}</el-col>
+        </el-row>
+        <span slot="footer" class="dialog-footer">
+          <dkd-button @click="cancelPolicy" user="cancel" class="cancelBtn"
+            >取消策略</dkd-button
+          >
+        </span>
+      </template>
     </el-dialog>
 
     <!-- 修改弹层 -->
@@ -112,14 +127,42 @@
       width="50%"
       @close="onCloseeditDialog"
     >
-      <el-row style="margin: 30px">机器编号：<span></span></el-row>
-      <el-row style="margin: 30px">供货时间：<span></span></el-row>
-      <el-row style="margin: 30px">设备类型：<span></span></el-row>
-      <el-row style="margin: 30px">设备容量：<span></span></el-row>
-      <el-row style="margin: 30px">设备点位：<span></span></el-row>
-      <el-row style="margin: 30px">合作商：<span></span></el-row>
-      <el-row style="margin: 30px">所属区域：<span></span></el-row>
-      <el-row style="margin: 30px">设备地址：<span></span></el-row>
+      <el-row style="margin: 30px"
+        >机器编号：<span>{{ editData.innerCode }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >供货时间：<span>{{ editData.lastSupplyTime }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >设备类型：<span>{{ editData.type }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >设备容量：<span>{{ editData.channelMaxCapacity }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >设备点位：
+        <el-select
+          v-model="editData.node"
+          placeholder="请选择"
+          style="width: 80%"
+        >
+          <el-option
+            v-for="item in nodeList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option> </el-select
+      ></el-row>
+      <el-row style="margin: 30px"
+        >合作商：<span>{{ editData.ownerName }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >所属区域：<span>{{ editData.region }}</span></el-row
+      >
+      <el-row style="margin: 30px"
+        >设备地址：<span>{{ editData.addr }}</span></el-row
+      >
 
       <span slot="footer" class="dialog-footer">
         <dkd-button @click="onCloseeditDialog" user="cancel" class="cancelBtn"
@@ -130,16 +173,29 @@
         >
       </span>
     </el-dialog>
+
+    <!-- 货道弹层 -->
+    <vmChannel
+      v-if="currentVm.type"
+      :vmChanneldialogVisible.sync="vmChanneldialogVisible"
+      :channelList="channelList"
+      :currentVm="currentVm"
+    ></vmChannel>
   </div>
 </template>
 <script>
 import searchTop from './components/searchTop.vue'
 import TableComponent from './components/table.vue'
+import vmChannel from './components/channel.vue'
 import {
   addVmAPI,
   applyPolicyAPI,
+  cancelvmPolicyAPI,
+  changeNodeAPI,
+  getchannelListAPI,
   getnodeListAPI,
   getpolicyList,
+  getvmPolicyAPI,
   getVmSearchAPI,
   getVmTypeListAPI
 } from '@/api/equipment'
@@ -171,6 +227,7 @@ export default {
       addDialogVisible: false, //新建弹层
       bulkDialogVisible: false, //批量操作弹层
       editDialogVisible: false, //修改弹层
+      vmChanneldialogVisible: false, //货道弹层
       AddForm: {
         nodeId: '',
         vmType: '',
@@ -185,19 +242,22 @@ export default {
       SelectList: [],
       policyList: [],
       policyId: '',
-      editData: {}
+      editData: {},
+      nodeList: [],
+      vmId: '',
+      vmPolicy: {},
+      vmInnerCode: '', //策略按钮赋值的
+      channelList: [], //货道详情
+      currentVm: {} //货道按钮当前售货机详情
     }
   },
 
   components: {
     searchTop,
-    TableComponent
+    TableComponent,
+    vmChannel
   },
-  computed: {
-    channelMaxCapacity() {
-      return this.editData.type.channelMaxCapacity
-    }
-  },
+  computed: {},
 
   created() {
     this.getVmSearch(this.baseParams)
@@ -205,12 +265,6 @@ export default {
   beforeUpdate() {
     this.searchResults.pageSize = +this.searchResults.pageSize
     this.searchResults.pageIndex = +this.searchResults.pageIndex
-  },
-  filters: {
-    timeFormat(val) {
-      console.log(val)
-      return val?.replace('T', ' ') ?? ''
-    }
   },
   methods: {
     async getVmSearch(val) {
@@ -229,15 +283,23 @@ export default {
       this.baseParams.innerCode = val.user
       this.getVmSearch(this.baseParams)
     },
-    //货道
-    changeChannel(val) {
-      console.log(val)
-    },
-    //策略
-    changeApplyPolicy(val) {
-      console.log(val)
-    },
 
+    //策略
+    async changeApplyPolicy(val) {
+      // console.log(val)
+      this.vmInnerCode = val.innerCode
+      const res = await getvmPolicyAPI(this.vmInnerCode)
+      console.log(res)
+      this.vmPolicy = res.data
+      console.log(this.vmPolicy)
+      this.showBulkDialogFn()
+    },
+    //取消策略
+    async cancelPolicy() {
+      await cancelvmPolicyAPI(this.vmPolicy.innerCode, this.vmPolicy.policyId)
+      this.getVmSearch(this.baseParams)
+      this.onClosebulkDialog()
+    },
     //新增部分函数
     //关闭新增弹层的函数
     onCloseaddDialog() {
@@ -272,7 +334,7 @@ export default {
       this.bulkDialogVisible = true
       const res = await getpolicyList()
       this.policyList = res.data
-      console.log(this.policyList)
+      // console.log(this.policyList)
     },
     getSelectListFn(val) {
       val.forEach((item) => this.SelectList.push(item.innerCode))
@@ -280,12 +342,24 @@ export default {
     },
     onClosebulkDialog() {
       this.bulkDialogVisible = false
+      this.vmPolicy = {}
+      this.vmInnerCode = ''
+      this.SelectList = []
     },
     async bulkHandle() {
-      const data = {
-        innerCodeList: this.SelectList,
-        policyId: this.policyId
+      let data = {}
+      if (this.SelectList.length !== 0) {
+        data = {
+          innerCodeList: [this.vmInnerCode],
+          policyId: this.policyId
+        }
+      } else {
+        data = {
+          innerCodeList: this.SelectList,
+          policyId: this.policyId
+        }
       }
+
       const res = await applyPolicyAPI(data)
       console.log(res)
       this.onClosebulkDialog()
@@ -293,24 +367,44 @@ export default {
 
     //修改部分函数
     //修改
-    editFn(val) {
+    async editFn(val) {
       this.editDialogVisible = true
+      const addr = val.node.addr.split('-')[val.node.addr.split('-').length - 1]
+      const lastSupplyTime = val.lastSupplyTime.replace('T', ' ')
       this.editData = {
-        innerCode: '',
-        lastSupplyTime: '',
-        type: '',
-        channelMaxCapacity: '',
-        node: '',
-        ownerName: '',
-        region: '',
-        addr: ''
+        innerCode: val.innerCode,
+        lastSupplyTime: lastSupplyTime,
+        type: val.type.name,
+        channelMaxCapacity: val.type.channelMaxCapacity,
+        node: val.node.id,
+        ownerName: val.ownerName,
+        region: val.region.name,
+        addr: addr
       }
-      console.log(val)
+      // console.log(val)
+      this.vmId = val.id
+      // console.log(this.editData)
+      const res = await getnodeListAPI()
+      this.nodeList = res.data.currentPageRecords
+      // console.log(this.nodeList)
     },
     onCloseeditDialog() {
       this.editDialogVisible = false
     },
-    editHandle() {}
+    async editHandle() {
+      await changeNodeAPI(this.vmId, this.editData.node)
+      this.getVmSearch(this.baseParams)
+      this.onCloseeditDialog()
+    },
+    //货道
+    async changeChannel(val) {
+      // console.log(val)
+      const res = await getchannelListAPI(val.innerCode)
+      this.channelList = res.data
+      this.currentVm = val
+      console.log(this.channelList)
+      this.vmChanneldialogVisible = true
+    }
   }
 }
 </script>
