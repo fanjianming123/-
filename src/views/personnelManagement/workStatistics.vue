@@ -62,6 +62,7 @@
               :end-placeholder="baseTiem"
               prefix-icon="el-icon-date"
               @change="getdata"
+              :picker-options="pickerOptions"
             >
             </el-date-picker>
           </el-col>
@@ -150,7 +151,34 @@ export default {
       end: '2022-08-08', // 默认时间
       timeout: '', //时间
       dimension: {}, //运维人员
-      camp: {} // 运营人员
+      camp: {}, // 运营人员
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '周',
+            onClick(picker) {
+              console.log(picker)
+              picker.$emit('pick', new Date())
+            }
+          },
+          {
+            text: '月',
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24)
+              picker.$emit('pick', date)
+            }
+          },
+          {
+            text: '年',
+            onClick(picker) {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', date)
+            }
+          }
+        ]
+      }
     }
   },
   computed: {
