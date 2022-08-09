@@ -33,50 +33,53 @@
       </el-form>
     </div>
 
-    <!-- 统计 -->
-    <div class="stats">
-      <span class="label">笔数统计：</span>
-      <span class="value">{{ count1 }}</span>
-      <span class="unit">个</span>
-      <span class="label">收入统计：</span>
-      <span class="value">{{count2}}</span>
-      <span class="unit">元</span>
-      <span class="label">分成统计：</span>
-      <span class="value">{{count3}}</span>
-      <span class="unit">元</span>
+    <!-- 表格内容 -->
+    <div>
+      <!-- 统计 -->
+      <div class="stats">
+        <span class="label">笔数统计：</span>
+        <span class="value">{{ count1 }}</span>
+        <span class="unit">个</span>
+        <span class="label">收入统计：</span>
+        <span class="value">{{ count2 }}</span>
+        <span class="unit">元</span>
+        <span class="label">分成统计：</span>
+        <span class="value">{{ count3 }}</span>
+        <span class="unit">元</span>
+      </div>
+      <!-- table -->
+      <!-- 表格 -->
+      <el-table :data="tableData" stripe style="width: 100%; margin: auto" class="form-data">
+        <el-table-column prop="date" :label="workOrderTitle.date" width="200">
+        </el-table-column>
+        <el-table-column
+          prop="ownerName"
+          :label="workOrderTitle.ownerName"
+          width="300"
+        >
+        </el-table-column>
+        <el-table-column prop="ratio" :label="workOrderTitle.ratio" width="200">
+        </el-table-column>
+        <el-table-column
+          prop="orderTotalMoney"
+          :label="workOrderTitle.orderTotalMoney"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="orderCount"
+          :label="workOrderTitle.orderCount"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="totalBill"
+          :label="workOrderTitle.totalBill"
+          width="200"
+        >
+        </el-table-column>
+      </el-table>
     </div>
-    <!-- table -->
-    <!-- 表格 -->
-    <el-table :data="tableData" stripe style="width: 100%; margin: auto">
-      <el-table-column prop="date" :label="workOrderTitle.date" width="300">
-      </el-table-column>
-      <el-table-column
-        prop="ownerName"
-        :label="workOrderTitle.ownerName"
-        width="300"
-      >
-      </el-table-column>
-      <el-table-column prop="ratio" :label="workOrderTitle.ratio" width="100">
-      </el-table-column>
-      <el-table-column
-        prop="orderTotalMoney"
-        :label="workOrderTitle.orderTotalMoney"
-        width="300"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="orderCount"
-        :label="workOrderTitle.orderCount"
-        width="300"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="totalBill"
-        :label="workOrderTitle.totalBill"
-        width="300"
-      >
-      </el-table-column>
-    </el-table>
   </div>
 </template>
 
@@ -122,21 +125,21 @@ export default {
       for (let i = 0; i < this.tableData.length; i++) {
         num = num + this.tableData[i].orderCount
       }
-      return num
+      return num.toFixed()
     },
     count2() {
       let num = 0
       for (let i = 0; i < this.tableData.length; i++) {
         num = num + this.tableData[i].orderTotalMoney
       }
-      return num
+      return (num/1000).toFixed(2)
     },
     count3() {
       let num = 0
       for (let i = 0; i < this.tableData.length; i++) {
         num = num + this.tableData[i].totalBill
       }
-      return num
+      return (num/1000).toFixed(2)
     }
   },
 
@@ -147,7 +150,7 @@ export default {
       this.partner.end = this.valueTime[1]
       this.partner.partnerName = this.select
       // console.log(this.select)
-      await this. getReconciliation(this.partner)
+      await this.getReconciliation(this.partner)
     },
     onRemove() {
       this.isShowDialog = true
@@ -188,7 +191,7 @@ export default {
 .stats {
   background-color: #fff;
   padding: 10px 0 0 18px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .label {
   font-size: 14px;
@@ -200,6 +203,10 @@ export default {
   color: #ff5757;
   font-weight: 500;
 }
+  /* //表单内边距 */
+  .form-data{
+    padding:13px
+  }
 .unit {
   margin-right: 50px;
   font-size: 12px;
