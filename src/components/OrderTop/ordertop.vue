@@ -49,7 +49,7 @@ export default {
       // console.log(this.formInline.user);
       this.$emit('submit', this.formInline.user,this.valueTime)
       this.formInline.user = ''
-      console.log(this.valueTime)
+      // console.log(this.valueTime)
       // this.$emit('submit', this.valueTime)
 
     },

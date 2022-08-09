@@ -47,13 +47,17 @@
       :Visible="Visible"
       @closeFn="closeFn"
       :details="details"
-    ></Viewdetails>
+      :Workorderform="Workorderform"
+    >
+      <el-table-column prop="week" label=""> </el-table-column>
+    </Viewdetails>
   </div>
 </template>
 
 <script>
 import Viewdetails from './components/Viewdetails'
-import Table from "./components/Table"
+import Table from './components/Table'
+import dayjs from 'dayjs'
 import {
   GetWorkloadApi,
   getuserMessageApi,
@@ -61,9 +65,10 @@ import {
 } from '@/api/personnel'
 export default {
   name: 'WorkList',
-  components: { Viewdetails,Table },
+  components: { Viewdetails, Table },
   data() {
     return {
+      Objs: [{ week: '本周' }, { week: '本月' }, { week: '本年' }],
       valueName: '',
       currentObj: {}, //
       baseparams: {
@@ -90,8 +95,8 @@ export default {
       ],
       value: '',
       Visible: false, //弹层显示
-      details: {},
-      start: '2020-10-01'+'00:00:00'
+      details: {}, //弹层信息
+      Workorderform: [] //弹层表格数据
     }
   },
 
@@ -135,29 +140,39 @@ export default {
       // 获取当前用户基本信息
       const res = await getuserMessageApi(val.userId)
       this.details = res.data
-      console.log(this.details)
+      // console.log(this.details)
       //获取工单统计
       //周
-      const weeks={
-        start: this.start.replace('+','2B%'),
-        end:'2020-10-08'+'00:00:00'.replace
+      const weeks = {
+        userId: val.userId,
+        start: dayjs(new Date()).startOf('week').format('YYYY-MM-DD 00:00:00'),
+        end: dayjs().endOf('day').format('YYYY-MM-DD hh:mm:ss')
       }
       const Week = await WorkOrderStatisticsApi(weeks)
-      console.log(Week)
+      // console.log(Week)
       //月
-      const months={
-        start: this.start,
-        end:'2020-11-01'+'00:00:00'
+      const months = {
+        userId: val.userId,
+        start: dayjs(new Date()).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        end: dayjs(new Date()).format('YYYY-MM-DD 23:59:59')
       }
       const month = await WorkOrderStatisticsApi(months)
-      console.log(month)
+      // console.log(month)
       //年
-      const years={
-        start: this.start,
-        end:'2021-10-01'+'00:00:00'
+      const years = {
+        userId: val.userId,
+        start: dayjs(new Date()).startOf('year').format('YYYY-MM-DD 00:00:00'),
+        end: dayjs().startOf('date').format('YYYY-MM-DD 23:59:59')
       }
       const year = await WorkOrderStatisticsApi(years)
-      console.log(year)
+      // console.log(year)
+      //合并三组数据
+      this.Workorderform = [Week.data, month.data, year.data]
+      //添加自定义列
+      for (let i = 0; i < this.Workorderform.length; i++) {
+        this.Workorderform[i].week = this.Objs[i].week
+      }
+      // console.log(this.Workorderform)
     }
   }
 }
@@ -165,7 +180,7 @@ export default {
 
 <style scoped lang="scss">
 .management {
-  min-height: 1350px;
+  min-height: 800px;
   background-color: #f8fafd;
   padding: 10px 12px 0;
   .top {

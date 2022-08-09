@@ -34,7 +34,7 @@
         </el-form-item>
         <el-form-item>
           <bb-button type="primary" @click.native="search">
-            <i class="iconfont icon-sousuo"></i>
+            <i class="el-icon-search"></i>
             查询
           </bb-button>
         </el-form-item>
@@ -68,13 +68,14 @@ export default {
   created() {},
   methods: {
     search() {
-      console.log(this.formInline)
+      // console.log(this.formInline)
       this.$emit('searchForm', this.formInline)
       this.$refs.formInline.resetFields()
     },
     onSubmit() {
       console.log('submit!')
-    }
+    },
+
   }
 }
 </script>

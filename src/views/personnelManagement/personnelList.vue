@@ -21,28 +21,57 @@
         :NavList="NavList"
         v-bind.sync="currentObj"
         @changePage="changePage"
+        @isShowDialog="isShowDialog"
         :isShow="false"
       >
         <el-table-column label="操作" min-width="200">
           <!-- slot-scope="scope" -->
-          <template >
-            <el-button type="text" size="small"> 修改 </el-button>
-            <el-button style="color: red" type="text" size="small">
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              size="small"
+              @click="isShowDialogModify(scope.row)"
+            >
+              修改
+            </el-button>
+            <el-button
+              @click="delPersonnel(scope.row)"
+              style="color: red"
+              type="text"
+              size="small"
+            >
               删除
             </el-button>
           </template>
         </el-table-column>
       </Table>
     </div>
+    <!-- 新增弹层 -->
+    <NewDailog
+      ref="newdailog"
+      :dialogFormVisible="dialogFormVisible"
+      @isOFFDialog="offdialog"
+      @repeat="getUpersonnel"
+      :RoleClassification="RoleClassification"
+      :areaList="areaList"
+      :currentPageRecords="currentPageRecords"
+    ></NewDailog>
   </div>
 </template>
 
 <script>
-import { getUpersonnelApi } from '@/api/personnel'
+import {
+  getUpersonnelApi,
+  RoleListApi,
+  AreaListApi,
+  DelePersonnelApi,
+  addPersonnelApi
+} from '@/api/personnel'
 import Table from './components/Table'
+import NewDailog from './components/NewDailog'
 export default {
   name: 'personnel',
-  components: { Table },
+  components: { Table, NewDailog },
   data() {
     return {
       NavList: [
@@ -56,7 +85,11 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-      valueName: ''
+      currentPageRecords: [], // 所有人员信息
+      valueName: '',
+      dialogFormVisible: false,
+      RoleClassification: [], //角色分类
+      areaList: [] //区域列表
     }
   },
   beforeUpdate() {
@@ -72,6 +105,7 @@ export default {
     async getUpersonnel(val) {
       const res = await getUpersonnelApi(val)
       this.currentObj = res.data
+      this.currentPageRecords = res.data.currentPageRecords
       // console.log(res)
     },
     //分页change事件
@@ -89,9 +123,40 @@ export default {
       }
       this.getUpersonnel(userName)
     },
+    //点击清除小图标发送
     clearValue() {
-      //点击清除小图标发送
       this.getUpersonnel(this.baseparams)
+    },
+    //关闭新增弹层
+    offdialog() {
+      this.dialogFormVisible = false
+    },
+    // 打开弹层 并获取角色列表与区域列表
+    async isShowDialog() {
+      this.dialogFormVisible = true
+      // 角色列表
+      const res = await RoleListApi()
+      this.RoleClassification = res.data
+      // 区域列表
+      const page = {
+        pageIndex: 1,
+        pageSize: 1000
+      }
+      const aretime = await AreaListApi(page)
+      this.areaList = aretime.data.currentPageRecords
+    },
+    //删除人员
+    async delPersonnel(val) {
+      await DelePersonnelApi(val.id)
+      this.$message.success('删除成功')
+      this.getUpersonnel()
+      // console.log(val);
+    },
+    //修改人员
+    async isShowDialogModify(val) {
+      // console.log(val)
+      this.$refs.newdailog.formData = val
+      this.isShowDialog()
     }
   }
 }
@@ -99,7 +164,7 @@ export default {
 
 <style scoped lang="scss">
 .management {
-  min-height: 1350px;
+  min-height: 800px;
   background-color: #f8fafd;
   padding: 20px 12px 0;
   .top {
