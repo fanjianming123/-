@@ -54,7 +54,7 @@
           type="primary"
           size="small"
           @click="$emit('editGoods', scope.row)"
-          >修改</el-button
+          >查看详情</el-button
         >
       </template>
     </el-table-column>
@@ -113,7 +113,7 @@ export default {
       })
       // console.log(res)
       this.$emit('paging', res.data)
-      // console.log(res.data)
+      // console.log(res.data.currentPageRecords)
       this.tableData = res.data.currentPageRecords
     },
 
