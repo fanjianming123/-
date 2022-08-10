@@ -74,7 +74,7 @@
         :key="index"
       >
         <span class="user-img"
-          ><i class="index-text">{{ index+1 }}</i>
+          ><i class="index-text">{{ index + 1 }}</i>
           <img src="./components/jin.png" alt="" v-if="index === 0" />
           <img src="./components/yin.png" alt="" v-else-if="index === 1" />
           <img src="./components/tong.png" alt="" v-else-if="index === 2" />
@@ -166,6 +166,18 @@ export default {
       const start = dayjs(new Date()).startOf('week').format('YYYY-MM-DD')
       const end = dayjs(new Date()).format('YYYY-MM-DD')
       return start + '~' + end
+    },
+    Salesdatas() { //销售数据图
+      const arr = this.seriesTimer.series.map((item) => {
+        return (item / 100).toFixed()
+      })
+      return arr
+    },
+     SalesDistris() { //销售额分布图
+      const arr = this.SalesDistri.series.map((item) => {
+        return (item / 100).toFixed()
+      })
+      return arr
     }
   },
   created() {
@@ -236,7 +248,7 @@ export default {
         },
         series: [
           {
-            data: this.seriesTimer.series,
+            data: this.Salesdatas,
             type: 'line',
             color: '#ff5757',
             areaStyle: {
@@ -312,7 +324,7 @@ export default {
         },
         series: [
           {
-            data: this.SalesDistri.series,
+            data: this.SalesDistris,
             type: 'bar',
             barWidth: '10%',
             itemStyle: {
