@@ -269,20 +269,41 @@ export default {
       const { data } = await getNodeSearchApi(id)
       this.form = data.currentPageRecords[0]
       this.form.id = data.currentPageRecords[0].id
+        ? data.currentPageRecords[0].id
+        : ''
       this.form.name = data.currentPageRecords[0].name
+        ? data.currentPageRecords[0].name
+        : ''
       this.form.regionName = data.currentPageRecords[0].region.name
+        ? data.currentPageRecords[0].region.name
+        : ''
       this.form.businessTypeName = data.currentPageRecords[0].businessType.name
+        ? data.currentPageRecords[0].businessType.name
+        : ''
       this.form.ownerName = data.currentPageRecords[0].ownerName
-      const addrArr =
-        data.currentPageRecords[0].addr.indexOf('/') === -1
-          ? data.currentPageRecords[0].addr.split('-')
-          : data.currentPageRecords[0].addr.split('/')
+        ? data.currentPageRecords[0].ownerName
+        : ''
+      if (data.currentPageRecords[0].addr) {
+        const addrArr =
+          data.currentPageRecords[0].addr.indexOf('/') === -1
+            ? data.currentPageRecords[0].addr.split('-')
+            : data.currentPageRecords[0].addr.split('/')
+        console.log(addrArr)
+        this.selectedOptions = TextToCode[addrArr[0]][addrArr[1]][addrArr[2]]
+          .code
+          ? TextToCode[addrArr[0]][addrArr[1]][addrArr[2]].code
+          : ''
+        this.form.addrDetail = addrArr[addrArr.length - 1]
+      } else {
+        const addrArr = ''
+        this.selectedOptions = addrArr
+        this.form.addrDetail = addrArr[addrArr.length - 1]
+      }
 
       // console.log(addrArr)
       // console.log(addrArr)
-      this.selectedOptions = TextToCode[addrArr[0]][addrArr[1]][addrArr[2]].code
+
       // console.log(this.selectedOptions)
-      this.form.addrDetail = addrArr[addrArr.length - 1]
       // {
       // //   name: '',
       // //   regionName: '',
