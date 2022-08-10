@@ -7,23 +7,40 @@
     :center="false"
   >
     <div>
-      <el-form ref="ruleForm" size="medium" :rules="rules" :model="ruleForm" status-icon label-width="140px" class="demo-ruleForm">
+      <el-form
+        ref="ruleForm"
+        size="medium"
+        :rules="rules"
+        :model="ruleForm"
+        status-icon
+        label-width="140px"
+        class="demo-ruleForm"
+      >
         <el-form-item label="策略名称" prop="policyName">
           <el-input
             v-model="ruleForm.policyName"
-            style="width:400px"
+            style="width: 400px"
             type="text"
             placeholder="请输入"
             maxlength="15"
             show-word-limit
-          /></el-form-item>
+        /></el-form-item>
         <el-form-item label="策略方案" prop="discount">
-          <el-input-number v-model="ruleForm.discount" style="width:400px" controls-position="right" :min="undefined" :max="90" />
+          <el-input-number
+            v-model="ruleForm.discount"
+            style="width: 400px"
+            controls-position="right"
+            :min="undefined"
+            :max="90"
+            placeholder="请输入"
+          />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="btnCancel">取 消</el-button>
-        <el-button type="primary" @click="btnOK">确 定</el-button>
+        <el-button class="btn btnno" @click="btnCancel">取 消</el-button>
+        <el-button class="btn btnok" type="primary" @click="btnOK"
+          >确 定</el-button
+        >
       </span>
     </div>
   </el-dialog>
@@ -33,8 +50,7 @@
 import { addPolicy, amendPolicy } from '@/api/strategy'
 export default {
   // 组件
-  components: {
-  },
+  components: {},
   props: {
     visible: {
       type: Boolean,
@@ -69,13 +85,12 @@ export default {
     }
   },
   // 创建后
-  created() {
-  },
+  created() {},
   // 函数
   methods: {
     // 确定
     btnOK() {
-      this.$refs.ruleForm.validate(async isOK => {
+      this.$refs.ruleForm.validate(async (isOK) => {
         if (isOK) {
           var arr = {}
           if (this.policyId === '') {
@@ -113,5 +128,27 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+::v-deep .el-dialog{
+  border-radius: 10px;
+}
+.dialog-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ .btn {
+    width: 80px;
+    height: 36px;
+  }
+}
+.el-button{
+  margin-right: 20px;
+  background-color: #fbf4f0;
+  border: none;
+
+}
+.el-button--primary {
+  background-color: #ff6d29;
+  border: none;
+}
 </style>

@@ -166,3 +166,6 @@
 .el-submenu .el-menu-item.is-active {
   color: $menuActiveText !important;
 }
+.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
