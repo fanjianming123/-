@@ -53,7 +53,7 @@
         <el-button
           type="primary"
           size="small"
-          @click="$emit('editGoods', scope.row)"
+          @click="$emit('editWork', scope.row)"
           >查看详情</el-button
         >
       </template>

@@ -71,3 +71,15 @@ export const getSupplyAlertValue = () =>
   request({
     url: '/api/task-service/task/supplyAlertValue'
   })
+
+/**
+ * 取消工单
+ * @param {*} taskId
+ * @returns
+ */
+export const delWork = (data) =>
+  request({
+    url: '/api/task-service/task/cancel/' + data.taskId,
+    method: 'POST',
+    data
+  })

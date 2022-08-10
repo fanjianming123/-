@@ -42,7 +42,11 @@
       </el-dialog>
       <!-- 工单配置 -->
       <!-- 列表 -->
-      <workTable ref="workPaging" @paging="pagingFn"></workTable>
+      <workTable
+        ref="workPaging"
+        @paging="pagingFn"
+        @editWork="editWork"
+      ></workTable>
       <!-- 分页 -->
       <div class="paging">
         <div>
@@ -67,6 +71,59 @@
     </el-card>
     <!-- 新建弹窗 -->
     <addWorkList :visible.sync="dialogVisible" ref="addWork"></addWorkList>
+    <!-- 查看详情 -->
+    <el-dialog title="工单详情" :visible.sync="dialogVisibleTree" width="30%">
+      <el-row>
+        <!-- <el-col :span="12">{{ list.taskStatusTypeEntity.statusName }}</el-col> -->
+        <el-col :span="12"></el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">设备编号:{{ list.innerCode }}</el-col>
+        <el-col :span="12">创建日期:{{ list.createTime }}</el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">运营人员:{{ list.userName }}</el-col>
+        <!-- <el-col :span="12">工单类型:{{ list.taskType.typeName }}</el-col> -->
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12"
+          >补货数量:
+          <span style="color: #5f84ff; cursor: pointer" @click="clickFn"
+            >补货详情</span
+          >
+        </el-col>
+        <el-col :span="12">工单方式:{{ list.createType }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">备注:{{ list.desc }}</el-col>
+        <el-col :span="12"></el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="delWork">取消工单</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 补货详情弹窗 -->
+    <el-dialog
+      title="补货详情"
+      :visible="dialogVisiblefoure"
+      width="30%"
+      @close="onClose"
+    >
+      <!-- 表格区域 -->
+      <el-table style="width: 100%" :data="ReplenishmentDetails">
+        <el-table-column prop="channelCode" label="货道编号" width="180">
+        </el-table-column>
+        <el-table-column prop="skuName" label="商品" width="180">
+        </el-table-column>
+        <el-table-column
+          prop="expectCapacity"
+          label="补满数量"
+          width="170"
+        ></el-table-column>
+      </el-table>
+      <!-- 表格区域 -->
+    </el-dialog>
   </div>
 </template>
 
@@ -74,7 +131,11 @@
 import searchTop from './components/searchTopa.vue'
 import workTable from './components/workTable.vue'
 import addWorkList from './components/addWorkList.vue'
-import { getSupplyAlertValue } from '@/api/workOrder'
+import {
+  getSupplyAlertValue,
+  getReplenishmentDetailsApi,
+  delWork
+} from '@/api/workOrder'
 export default {
   name: 'Operating',
   data() {
@@ -102,7 +163,11 @@ export default {
       },
       formRules: {
         num: [{ required: true }]
-      }
+      },
+      dialogVisibleTree: false, //详情弹窗
+      list: {}, //工单详情,
+      dialogVisiblefoure: false, //详情弹窗=>补货详情
+      ReplenishmentDetails: [] //补货详情
     }
   },
 
@@ -130,16 +195,53 @@ export default {
     },
     newGoods() {
       this.dialogVisible = true
-      // this.$refs.addWork.createRepair()
     },
     async onSave() {
       await getSupplyAlertValue()
       this.dialogVisibleTwo = false
-      // console.log(res.data)
-      // this.form = res.data
     },
     handleChange(val) {
       this.form.num = val
+    },
+    editWork(val) {
+      // console.log(val)
+      this.list = val
+      this.dialogVisibleTree = true
+    },
+    async clickFn() {
+      console.log(111)
+      this.dialogVisiblefoure = true
+      const res = await getReplenishmentDetailsApi(this.list.taskId)
+      console.log(res.data)
+      this.ReplenishmentDetails = res.data
+    },
+    onClose() {
+      this.dialogVisiblefoure = false
+    },
+    async delWork() {
+      this.$confirm('此操作将取消该订单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          try {
+            await delWork(this.list)
+            this.dialogVisibleTree = false
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          } catch (error) {
+            this.$message.error(error.response.data)
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   },
   components: {
