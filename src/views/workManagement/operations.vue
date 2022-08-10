@@ -28,6 +28,34 @@
       :AreaList="AreaList"
       @add="addArea"
     ></dialogAdd>
+    <!-- 查看详情弹窗 -->
+    <el-dialog
+      title="工单详情"
+      :visible="dialogVisible"
+      width="30%"
+      @close="onClose"
+    >
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">{{ list.taskStatus }}</el-col>
+        <el-col :span="12"></el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">设备编号：{{ list.innerCode }}</el-col>
+        <el-col :span="12">创建日期：{{ list.createTime }}</el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">运维人员：{{ list.userName }}</el-col>
+        <el-col :span="12"></el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">工单类型：{{ list.typeName }}</el-col>
+        <el-col :span="12">工单方式：{{ list.createType }}</el-col>
+      </el-row>
+      <el-row style="margin-bottom: 10px">
+        <el-col :span="12">备注：{{ list.desc }}</el-col>
+        <el-col :span="12">定位：{{ list.addr }}</el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -37,7 +65,8 @@ import bkdTable from './operations/bkdTable.vue'
 import {
   getOperationsSearchApi,
   getallTaskStatusApi,
-  addTaskApi
+  addTaskApi,
+  getWorkList
 } from '@/api/operations'
 import dialogAdd from './operations/dialogAdd.vue'
 export default {
@@ -74,7 +103,9 @@ export default {
       dialogFormVisible: false,
       editAreaList: {},
       Visible: false,
-      isRepair: true
+      isRepair: true,
+      dialogVisible: false,
+      list: {}
     }
   },
   components: {
@@ -147,16 +178,16 @@ export default {
     async addArea(val) {
       console.log(val)
       try {
-      const data = {
-        createType: 1,
-        innerCode: val.innerCode,
-        userId: val.userName,
-        productType: val.taskType,
-        desc: val.remark
-      }
-      await addTaskApi(data)
-      this.$message.success('添加成功')
-      this.getNodeSearch()
+        const data = {
+          createType: 1,
+          innerCode: val.innerCode,
+          userId: val.userName,
+          productType: val.taskType,
+          desc: val.remark
+        }
+        await addTaskApi(data)
+        this.$message.success('添加成功')
+        this.getNodeSearch()
       } catch (error) {
         this.$message.error('添加失败')
         this.$message.error(error.response.data)
@@ -164,8 +195,10 @@ export default {
       // console.log(res)
     },
     async handleClick(row) {
-      this.$refs.showDetail.tableData = row
-      this.Visible = true
+      // this.$refs.showDetail.tableData = row
+      // this.Visible = true
+      this.list = row
+      this.dialogVisible = true
     },
     async deleteRow(row) {
       try {
@@ -187,6 +220,9 @@ export default {
         pageIndex: this.AreaList.pageIndex,
         pageSize: this.AreaList.pageSize
       })
+    },
+    onClose() {
+      this.dialogVisible = false
     }
   }
 }

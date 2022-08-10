@@ -59,3 +59,12 @@ export function addTaskApi(data) {
     data
   })
 }
+// /**
+//  * 获取工单详情
+//  * @param {*} taskId
+//  * @returns
+//  */
+// export const getWorkList = (taskId) =>
+//   request({
+//     url: '/api/task-service/task/taskInfo/' + taskId
+//   })
