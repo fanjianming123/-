@@ -19,9 +19,9 @@
           <el-select v-model="formInline.region" placeholder="请选择">
             <el-option
               v-for="item in selectOption"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+              :key="item.statusId"
+              :label="item.statusName"
+              :value="item.statusId"
             ></el-option>
           </el-select>
           <i
@@ -69,7 +69,10 @@ export default {
     onSubmit() {
       console.log('submit!')
     },
-    handleSelectChange() {}
+    handleSelectChange() {},
+    setSelectOption(val) {
+      this.selectOption = val
+    }
   }
 }
 </script>

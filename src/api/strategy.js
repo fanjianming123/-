@@ -48,3 +48,17 @@ export const amendPolicy = (data, policyId) => {
     data
   })
 }
+
+/**
+ *  根据策略搜索售货机
+ * 
+ * @param {string} policyId
+ * @returns promise
+ */
+ export const searchPolicy = (params) => {
+  return request({
+    url: '/api/vm-service/policy/vmList/'+params.policyId,
+    method: 'GET',
+    params
+  })
+}

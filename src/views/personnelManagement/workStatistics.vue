@@ -81,9 +81,8 @@
           </el-col>
         </el-row>
         <el-row class="empty-img">
-          <el-col>
-            <!-- <el-empty description="暂无数据"></el-empty> -->
-          </el-col>
+          <img src="./components/backgroundImg/zwsj.png" alt="" />
+          <div class="text">暂无数据</div>
         </el-row>
       </el-col>
 
@@ -120,9 +119,8 @@
           >
         </el-row>
         <el-row class="empty-img">
-          <el-col>
-            <!-- <el-empty description="暂无数据"></el-empty> -->
-          </el-col>
+          <img src="./components/backgroundImg/zwsj.png" alt="" />
+          <div class="text">暂无数据</div>
         </el-row>
       </el-col>
     </el-row>
@@ -265,11 +263,10 @@ export default {
     },
     //确定选择的时间发送接口
     async getdata() {
-      // console.log(this.timeout);
       const start = this.timeout[0]
       const end = this.timeout[1]
       const res = await statusTatisticsApi(start, end)
-      console.log(res)
+      // console.log(res)
     }
   }
 }
@@ -368,12 +365,10 @@ export default {
       }
     }
     .empty-img {
-      width: 100%;
-      height: 100%;
-      user-select: none;
-      position: relative;
-      background: url('./components/backgroundImg/zwsj.png') no-repeat;
-      background-position: 370px 192px;
+      margin: 180px 0 0 389px;
+      .text {
+        margin-left: 37px;
+      }
     }
   }
   .right-message {
@@ -417,12 +412,10 @@ export default {
       }
     }
     .empty-img {
-      width: 100%;
-      height: 100%;
-      user-select: none;
-      position: relative;
-      background: url('./components/backgroundImg/zwsj.png') no-repeat;
-      background-position: 80px 155px;
+      margin: 152px 0 0 93px;
+      .text {
+        margin-left: 39px;
+      }
     }
   }
 }

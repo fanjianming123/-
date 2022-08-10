@@ -164,7 +164,7 @@ export default {
 
 <style scoped lang="scss">
 .management {
-  min-height: 1350px;
+  min-height: 800px;
   background-color: #f8fafd;
   padding: 20px 12px 0;
   .top {

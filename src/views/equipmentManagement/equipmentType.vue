@@ -6,7 +6,7 @@
       :NavList="NavList"
       v-bind.sync="searchResults"
       @changePage="changePageFn"
-      @showAddDialog='showAddDialogFn'
+      @showAddDialog="showAddDialogFn"
     >
       <template v-slot:default="data">
         <el-button size="mini" type="text" @click="editFn(data)"
@@ -21,9 +21,18 @@
         >
       </template>
     </TableComponent>
+    <!-- 新增弹层部分 -->
+    <addVmType
+      :isEdit="isEdit"
+      :dialogVisible.sync="dialogVisible"
+      :currentEditData="currentEditData"
+      @addSuccess="addSuccessFn"
+      @changeisEdit="isEdit = false"
+    ></addVmType>
   </div>
 </template>
 <script>
+import addVmType from './components/addVmType.vue'
 import searchTop from './components/searchTop.vue'
 import TableComponent from './components/table.vue'
 import { delVmTypeAPI, getVmTypeAPI } from '@/api/equipment'
@@ -52,13 +61,17 @@ export default {
         { label: '货道行', value: 'vmRow' },
         { label: '货道列', value: 'vmCol' },
         { label: '设备容量', value: 'channelMaxCapacity' }
-      ]
+      ],
+      dialogVisible: false, //新增弹层控制变量
+      currentEditData: {}, //编辑的当前行数据
+      isEdit: false
     }
   },
 
   components: {
     searchTop,
-    TableComponent
+    TableComponent,
+    addVmType
   },
 
   created() {
@@ -81,12 +94,15 @@ export default {
       })
     },
     searchFormFn(val) {
-      // console.log(val)
+      console.log(val)
       this.baseParams.name = val.user
       this.getVmSearch(this.baseParams)
     },
     editFn(val) {
-      console.log(val)
+      this.currentEditData = val.data
+      console.log(this.currentEditData)
+      this.isEdit = true
+      this.dialogVisible = true
     },
     async delFn(val) {
       try {
@@ -94,6 +110,13 @@ export default {
         this.getVmSearch(this.baseParams)
         this.$message.success('删除成功')
       } catch (error) {}
+    },
+    addSuccessFn() {
+      this.getVmSearch(this.baseParams)
+    },
+    showAddDialogFn() {
+      this.isEdit = false
+      this.dialogVisible = true
     }
   }
 }

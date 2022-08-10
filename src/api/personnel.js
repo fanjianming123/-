@@ -4,6 +4,11 @@ import request from '@/utils/request'
  * @param {Object} params 人员信息数据
  * @returns  promise
  */
+/**
+ * 搜索合作商
+ * @param {*} params
+ * @returns
+ */
 export const getUpersonnelApi = (params) => {
   return request({
     url: '/api/user-service/user/search',

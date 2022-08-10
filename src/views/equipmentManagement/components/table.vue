@@ -8,15 +8,19 @@
           ></el-col
         >
         <el-col
-          ><dkd-button user="cancel" v-if="!isOneBtn"
-            >工单配置</dkd-button
+          ><dkd-button user="cancel" v-if="!isOneBtn" @click="showBulkDialogFn"
+            >批量操作</dkd-button
           ></el-col
         >
       </el-row>
 
       <!-- 表格部分 -->
       <div class="table-container">
-        <el-table :data="currentPageRecords" style="width: 100%">
+        <el-table
+          :data="currentPageRecords"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" v-if="isSelect"> </el-table-column>
           <el-table-column label="序号" type="index" :index="num" width="80">
           </el-table-column>
@@ -92,7 +96,9 @@
 export default {
   name: 'Table',
   data() {
-    return {}
+    return {
+      select: []
+    }
   },
   props: {
     NavList: {
@@ -180,6 +186,14 @@ export default {
       // console.log(`当前页: ${val}`)
       this.$emit('update:pageIndex', val)
       this.$emit('changePage')
+    },
+    handleSelectionChange(val) {
+      this.$emit('getSelectList', val)
+      this.select = val
+    },
+    showBulkDialogFn() {
+      if (this.select.length <= 0) return this.$message.warning('请勾选售货机')
+      this.$emit('showBulkDialog', true)
     }
   }
 }

@@ -38,13 +38,26 @@
 </template>
 
 <script>
-import { getAreaDetailApi } from '@/api/point'
+import { getAreaDetailApi, getAreaListApi } from '@/api/point'
 export default {
   data() {
-    const checkName = (rule, value, callback) => {
-      const isRepect = this.AreaList.currentPageRecords.some(
-        (item) => item.name === value
-      )
+    const checkName = async (rule, value, callback) => {
+      let isRepect
+      // console.log(this.editAreaList)
+      const {
+        data: { currentPageRecords }
+      } = await getAreaListApi({
+        pageSize: this.AreaList.totalCount
+      })
+      const allAreaList = currentPageRecords
+      // console.log(allAreaList)
+      if (this.editAreaList.id) {
+        isRepect = allAreaList
+          .filter((item) => item.name !== this.editAreaList.name)
+          .some((item) => item.name === value)
+      } else {
+        isRepect = allAreaList.some((item) => item.name === value)
+      }
       // console.log(isRepect)
       isRepect ? callback(new Error('区域名称重复')) : callback()
     }
@@ -79,36 +92,37 @@ export default {
   },
   created() {},
   methods: {
-    onClose() {
+    async onClose() {
       this.$emit('update:visible', false)
+      this.$refs.ruleForm.resetFields()
+      this.form = {
+        name: '',
+        remark: ''
+      }
     },
     async confirm() {
       await this.$refs.ruleForm.validate()
-      await this.$emit('add', this.form)
-      await this.$refs.ruleForm.resetFields()
+      if (this.editAreaList.id) {
+        this.$emit('edit', this.form)
+      } else {
+        await this.$emit('add', this.form)
+        await this.$refs.ruleForm.resetFields()
+      }
       this.onClose()
       // console.log(res)
       // this.$emit('update:visible', false)
     },
     async showEditContent(id) {
-      console.log(id)
+      // console.log(id)
       const { data } = await getAreaDetailApi(id)
-      // this.form = data
-      console.log(data)
+      this.form = data
+      // this.form.remark = data.remark
+      // console.log(this.form)
     }
   },
   computed: {
     titleDialog() {
-      return this.editAreaList.id ? '修改区域' : '新增区域'
-    }
-  },
-  watch: {
-    form: {
-      handler(newName) {
-        console.log(newName)
-      },
-      deep: true,
-      immediate: true
+      return this.form.id ? '修改区域' : '新增区域'
     }
   }
 }

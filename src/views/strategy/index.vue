@@ -16,7 +16,7 @@
           </template>
           <el-input
             v-model="searchFrom.policyName"
-            placeholder="请输入策略名称"
+            placeholder="请输入"
           />
         </el-form-item>
         <el-form-item>
@@ -25,6 +25,7 @@
             class="item-btn"
             icon="el-icon-search"
             @click="onSubmit"
+            style="font-size: 14px"
             >查询</el-button
           >
         </el-form-item>
@@ -39,6 +40,7 @@
           @click="addBtn"
         />
       </div>
+      <!-- 表格 -->
       <div class="Strategy-main">
         <el-table
           :data="tableData"
@@ -50,14 +52,17 @@
         >
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="text" @click="seeDetails">查看详情</el-button>
+              <!-- 这个我先跟你说 slot-scope已经outt了 现在都用v-slot  -->
+              <el-button type="text" @click="seeDetails(scope.row)"
+                >查看详情</el-button
+              >
               <el-button type="text" @click="handleEdit(scope.row)"
                 >修改</el-button
               >
               <el-button
                 type="text"
                 style="color: red"
-                @click="clickremoverePolicy(scope.row)"
+                @click="clickremoverePolicy()"
                 >删除</el-button
               >
             </template>
@@ -94,7 +99,11 @@
       :visible.sync="visible"
       @refresh="PolicySearch"
     />
-    <TacticsDetails ref="ontable"></TacticsDetails>
+    <TacticsDetails
+      :visible.sync="dialogTableVisible"
+      :policyName="policyName"
+      ref="child"
+    ></TacticsDetails>
   </div>
 </template>
 
@@ -118,6 +127,8 @@ export default {
         policyName: '',
         pageIndex: 1
       },
+      policyName: '',
+      policyNameList: [],
       moment,
       WorkOrderList: [],
       Pag: '', // 分页数据
@@ -127,7 +138,8 @@ export default {
       loading: false, // 加载
       visible: false, // 弹出层
       row: {}, // 当前项
-      dialogTableVisible: false //
+      dialogTableVisible: false, //
+      policyId: ''
     }
   },
   computed: {
@@ -169,13 +181,18 @@ export default {
     },
     // 删除策略
     async clickremoverePolicy(row) {
-      console.log(row.policyId)
+      console.log(row)
+      this.policyId = row ? row.policyId : this.policyId
       try {
-        await removerePolicy(row.policyId)
+        await removerePolicy(this.policyId)
         this.PolicySearch()
       } catch (error) {
         console.dir(error)
       }
+      this.$message({
+        message: '演示系统，不支持此操作',
+        type: 'warning'
+      })
     },
     // 修改
     handleEdit(row) {
@@ -213,8 +230,16 @@ export default {
       return data
     },
     // 查看详情弹框
-    seeDetails() {
+    seeDetails(row) {
+      // console.log(row);
       this.dialogTableVisible = true
+      this.$refs.child.clickSearchPolicy(row) // 这行我没懂 请求数据在哪
+      this.policyName = row.policyName
+      // 把table渲染的那个策略社么的对应的传过去不就好了，传啊
+      // this.tableData.forEach((item) => {
+      //   return this.policyNameList.push(item.policyName)
+      // })
+      console.log(this.policyName)
     }
   }
 }
