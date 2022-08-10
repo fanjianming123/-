@@ -100,11 +100,11 @@ export default {
   methods: {
     async onClose() {
       this.$emit('update:visible', false)
-        this.$refs.ruleForm.resetFields()
-        this.form = {
-          name: '',
-          remark: ''
-        }
+      //   this.$refs.ruleForm.resetFields()
+      //   this.form = {
+      //     name: '',
+      //     remark: ''
+      //   }
     },
     async confirm() {
       await this.$refs.ruleForm.validate()
